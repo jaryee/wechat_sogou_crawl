@@ -14,20 +14,26 @@
 # 项目使用
 
 一、使用说明
+
 1、在mysql数据库中创建数据库，比如Jubang,数据格式为utf8mb4，然后导入jubang.sql文件，创建对应的数据库表
+
 2、修改config.py文件中对应的设置，打码平台配置ruokuai这个一定要设置，否则出现验证码就不能正常工作了
-2、python对应的库的安装好，pymysql、request、lxml、PIL等
-3、手动或自动在add_mp_list表中增加数据，然后运行auto_add_mp.py文件。
+
+3、python对应的库的安装好，pymysql、request、lxml、PIL等
+
+4、手动或自动在add_mp_list表中增加数据，然后运行auto_add_mp.py文件。
    比如可以这样用：给auto_add_mp.py设定一个定时任务，5分钟或10分钟，然后前台页面文件让使用者添加待抓取的
    公众号信息，然后定时任务执行时就可以把这些公众号加入待抓取列表了
    add_mp_list中
    name字段是模糊抓取，会根据输入的名称模糊加入10个公众号
    wx_hao字段是精确抓取，这个是公众号的微信号，只抓取一个
    这两个字段可以任意填入一个就行
-4、执行updatemp.py文件，文件说明看后面。使用中可以给该文件设定定时任务30分钟或其它间隔，每隔一定时间，运行该
+
+5、执行updatemp.py文件，文件说明看后面。使用中可以给该文件设定定时任务30分钟或其它间隔，每隔一定时间，运行该
    文件就会抓取已添加的公众号是否有新文章发出来。
    第一次使用会抓取公众号的最近10条群发数据
-5、执行updatewenzhang.py文件，该文件是抓取文章阅读及点攒数的。最新的数据会写入wenzhang_info表中，并且会在表wenzhang_statistics中
+
+6、执行updatewenzhang.py文件，该文件是抓取文章阅读及点攒数的。最新的数据会写入wenzhang_info表中，并且会在表wenzhang_statistics中
    添加增量记录，可以根据wenzhang_statistics表中的数据生成曲线图
    使用中可以给该文件添加5分钟或其它时间的定时任务，这样就可以来生成对应的阅读曲线图了
 
