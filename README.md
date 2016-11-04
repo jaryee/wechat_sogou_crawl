@@ -19,7 +19,7 @@
 
 2、修改config.py文件中对应的设置，打码平台配置ruokuai这个一定要设置，否则出现验证码就不能正常工作了
 
-3、python对应的库的安装好，pymysql、request、lxml、PIL等
+3、python对应的库的安装好，pymysql、request、lxml、PIL、werkzeug等
 
 4、手动或自动在add_mp_list表中增加数据，然后运行auto_add_mp.py文件。
    比如可以这样用：给auto_add_mp.py设定一个定时任务，5分钟或10分钟，然后前台页面文件让使用者添加待抓取的
