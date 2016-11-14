@@ -221,3 +221,11 @@
 2016-11-02 10:43:17,500 - [basic.py:216] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
 2016-11-02 10:43:30,543 - [basic.py:155] - ERROR - 出现验证码。。。
 2016-11-02 10:43:37,605 - [basic.py:216] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2016-11-03 16:36:44,221 - [api.py:553] - ERROR - deal_mass_send_msg_page ret -6 errmsg req control
+2016-11-03 16:39:45,326 - [api.py:553] - ERROR - deal_mass_send_msg_page ret -6 errmsg req control
+2016-11-03 16:43:44,660 - [api.py:553] - ERROR - deal_mass_send_msg_page ret -6 errmsg req control
+2016-11-03 16:47:45,559 - [api.py:553] - ERROR - deal_mass_send_msg_page ret -6 errmsg req control
+2016-11-03 16:58:43,269 - [api.py:553] - ERROR - deal_mass_send_msg_page ret -6 errmsg req control
+2016-11-03 17:02:42,711 - [api.py:553] - ERROR - deal_mass_send_msg_page ret -6 errmsg req control
+2016-11-03 17:04:44,151 - [api.py:553] - ERROR - deal_mass_send_msg_page ret -6 errmsg req control
+2016-11-03 17:09:43,049 - [api.py:553] - ERROR - deal_mass_send_msg_page ret -6 errmsg req control

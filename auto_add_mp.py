@@ -4,7 +4,7 @@
 # 导入包
 from wechatsogou.tools import *
 from wechatsogou import *
-import _imaging
+from PIL import Image
 import datetime
 import time
 import sys,locale
