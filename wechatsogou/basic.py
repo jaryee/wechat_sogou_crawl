@@ -151,6 +151,7 @@ class WechatSogouBasic(WechatSogouBase):
             json = kwargs.get('json', None)
             r = self._session.post(url, data=data, json=json, headers=headers, **kwargs)
         
+        logger.error(r.text)
         if u'链接已过期' in r.text:
             return '链接已过期'
         if r.status_code == requests.codes.ok:
@@ -175,23 +176,26 @@ class WechatSogouBasic(WechatSogouBase):
             WechatSogouVcodeException: 解封失败，可能验证码识别失败
         """
         while(True) :
+            print(u"出现验证码，准备自动识别")
             logger.debug('vcode appear, using _jiefeng')
             codeurl = 'http://weixin.sogou.com/antispider/util/seccode.php?tc=' + str(time.time())[0:10]
             coder = self._session.get(codeurl)
             codeID = "0"
+            
             if hasattr(self, '_ocr'):
                 result = self._ocr.create(coder.content, 3060)
                 print(result)
                 if not result.has_key('Result') :
+                    print(u"验证码识别错误,是否正确设置验证码模块用户信息")
                     continue #验证码识别错误，再次执行
 
                 img_code = result['Result']
                 codeID = result['Id']
                 
             else:
-                im = readimg(coder.content)
-                im.show()
-                img_code = input("please input code: ")
+                print(u"没有设置自动识别模块用户名、密码，无法执行")
+                break
+
             post_url = 'http://weixin.sogou.com/antispider/thank.php'
             post_data = {
                 'c': img_code,
@@ -217,7 +221,7 @@ class WechatSogouBasic(WechatSogouBase):
                 logger.error('cannot jiefeng because ' + remsg['msg'])
                 raise WechatSogouVcodeException('cannot jiefeng because ' + remsg['msg'])
             self._cache.set(config.cache_session_name, self._session)
-            print('ocr ', remsg['msg'].encode('gb18030'))
+            print(u"识别成功，继续执行")
             logger.error('verify code ocr: ' + remsg['msg'])
             break
 
