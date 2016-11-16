@@ -73,15 +73,10 @@ class WechatSogouBasic(WechatSogouBase):
                 cookie_jar.set_cookie(cookielib.Cookie(version=0, name=cookie['name'], value=cookie['value'], port=None, port_specified=False, domain=cookie['domain'], domain_specified=False, domain_initial_dot=False, path=cookie['path'], path_specified=True, secure=cookie['secure'], expires=None, discard=True, comment=None, comment_url=None, rest={'HttpOnly': None}, rfc2109=False))  
             self._session.cookies.update(cookie_jar)
         
-        ocr_config = kwargs.get('ocr_config')
-        if ocr_config:
-
-            if ocr_config['type'] == 'ruokuai':
-                dama_name = ocr_config.get('dama_name')
-                dama_pswd = ocr_config.get('dama_pswd')
-                dama_soft_id = ocr_config.get('dama_soft_id')
-                dama_soft_key = ocr_config.get('dama_soft_key')
-                self._ocr = RClient(dama_name, dama_pswd, dama_soft_id, dama_soft_key)
+        self.dama_name = config.dama_name
+        self.dama_pswd = config.dama_pswd
+        if self.dama_name != '' and self.dama_pswd != '':
+           self._ocr = RClient(self.dama_name, self.dama_pswd, '70021', 'dcefe229cb9b4e1785b48fbc3525d011')
 
         self._agent = [
             "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0",
