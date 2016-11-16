@@ -35,7 +35,8 @@ class WechatSogouApi(WechatSogouBasic):
             renzhen: 认证，为空表示未认证
             qrcode: 二维码
             img: 头像图片
-            url: 最近文章地址
+            url: 文章地址
+            last_url: 最后一篇文章地址
         """
         text = self._search_gzh_text(name, page)
         try:
@@ -51,18 +52,29 @@ class WechatSogouApi(WechatSogouBasic):
         info_urls = page.xpath(u"//div[@target='_blank']")
         for info_url in info_urls:
             url.append(info_url.attrib['href'])
+
+        last_url = list()
+        info_last_urls = page.xpath(u"//span[@class='sp-txt']/a[@target='_blank']")
+        for info_last_url in info_last_urls:
+            last_url.append(info_last_url.attrib['href'])
+
         name = list()
         wechatid = list()
         jieshao = list()
         renzhen = list()
         info_instructions = page.xpath(u"//div[@class='txt-box']")
         
+        list_index = 0
         for info_instruction in info_instructions:
             cache = self._get_elem_text(info_instruction)
             cache = cache.replace('red_beg', '').replace('red_end', '')
             cache_list = cache.split('\n')
             cache_re = re.split(u'微信号：|功能介绍：|认证：|最近文章：', cache_list[0])
             name.append(cache_re[0])
+
+            if(cache.find("最近文章") == -1) :
+                last_url.insert(list_index,"")
+            list_index += 1
             wechatid.append(cache_re[1])
             if "authnamewrite" in cache_re[2]:
                 jieshao.append(re.sub("authnamewrite\('[0-9]'\)", "", cache_re[2]))
@@ -70,6 +82,9 @@ class WechatSogouApi(WechatSogouBasic):
             else:
                 jieshao.append(cache_re[2])
                 renzhen.append('')
+
+            
+
         qrcodes = list()
         info_qrcodes = page.xpath(u"//div[@class='pos-ico']/div/img")
         
@@ -85,7 +100,8 @@ class WechatSogouApi(WechatSogouBasic):
                     'renzhen': renzhen[i],
                     'qrcode': qrcodes[i],
                     'img': img[i],
-                    'url': url[i]
+                    'url': url[i],
+                    'last_url': last_url[i]
                 }
             )
         return returns
