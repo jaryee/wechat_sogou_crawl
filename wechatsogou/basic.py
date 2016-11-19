@@ -438,7 +438,6 @@ class WechatSogouBasic(WechatSogouBase):
 
             html = msglist
             html = html.replace('&#39;', '\'')
-            #html = html.replace('&quot;', '"')
             html = html.replace('&amp;', '&')
             html = html.replace('&gt;', '>')
             html = html.replace('&lt;', '<')
@@ -449,7 +448,7 @@ class WechatSogouBasic(WechatSogouBase):
             html = html.replace('&nbsp;', ' ')
             html = html.replace('\\', '')
 
-            msgdict = eval(self._replace_html(msglist))
+            msgdict = eval(html)
             return msgdict
         except:
             return ''
