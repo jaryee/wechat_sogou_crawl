@@ -432,9 +432,27 @@ class WechatSogouBasic(WechatSogouBase):
         Returns:
             msgdict: 最近文章信息字典
         """
-        msglist = re.findall("var msgList = '(.+?)';", text, re.S)[0]
-        msgdict = eval(self._replace_html(msglist))
-        return msgdict
+        try:
+            msglist = re.findall("var msgList = (.+?)};", text, re.S)[0]
+            msglist = msglist + '}'
+
+            html = msglist
+            html = html.replace('&#39;', '\'')
+            #html = html.replace('&quot;', '"')
+            html = html.replace('&amp;', '&')
+            html = html.replace('&gt;', '>')
+            html = html.replace('&lt;', '<')
+            html = html.replace('&yen;', '¥')
+            html = html.replace('amp;', '')
+            html = html.replace('&lt;', '<')
+            html = html.replace('&gt;', '>')
+            html = html.replace('&nbsp;', ' ')
+            html = html.replace('\\', '')
+
+            msgdict = eval(html)
+            return msgdict
+        except:
+            return ''
 
     def _deal_gzh_article_dict(self, msgdict, **kwargs):
         """解析 公众号 群发消息
