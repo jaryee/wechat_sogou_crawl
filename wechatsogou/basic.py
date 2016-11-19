@@ -435,9 +435,21 @@ class WechatSogouBasic(WechatSogouBase):
         try:
             msglist = re.findall("var msgList = (.+?)};", text, re.S)[0]
             msglist = msglist + '}'
-            msglist.replace('"','\'')
+
+            html = msglist
+            html = html.replace('&#39;', '\'')
+            #html = html.replace('&quot;', '"')
+            html = html.replace('&amp;', '&')
+            html = html.replace('&gt;', '>')
+            html = html.replace('&lt;', '<')
+            html = html.replace('&yen;', '¥')
+            html = html.replace('amp;', '')
+            html = html.replace('&lt;', '<')
+            html = html.replace('&gt;', '>')
+            html = html.replace('&nbsp;', ' ')
+            html = html.replace('\\', '')
+
             msgdict = eval(self._replace_html(msglist))
-            
             return msgdict
         except:
             return ''
