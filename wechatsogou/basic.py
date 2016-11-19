@@ -184,10 +184,12 @@ class WechatSogouBasic(WechatSogouBase):
             
             if hasattr(self, '_ocr'):
                 result = self._ocr.create(coder.content, 3060)
-                print(result)
                 if not result.has_key('Result') :
-                    print(u"验证码识别错误,是否正确设置验证码模块用户信息")
+                    print(u"验证码识别错误,错误原因：%s" %(result['Error']))
+                    time.sleep(1)
                     continue #验证码识别错误，再次执行
+                else:
+                    print(u"验证码识别成功 验证码：%s" %(result['Result']))
 
                 img_code = result['Result']
                 codeID = result['Id']
@@ -232,12 +234,24 @@ class WechatSogouBasic(WechatSogouBase):
         codeurl = 'http://mp.weixin.qq.com/mp/verifycode?cert=' + timever
         coder = self._session.get(codeurl)
         if hasattr(self, '_ocr'):
-            result = self._ocr.create(coder.content, 2040)
-            img_code = result['Result']
+            max_count = 0
+            while(max_count < 5):
+                max_count += 1
+                logger.debug('vcode appear, using _ocr_for_get_gzh_article_by_url_text')
+                result = self._ocr.create(coder.content, 2040)
+                if not result.has_key('Result') :
+                    print(u"验证码识别错误,错误原因：%s" %(result['Error']))
+                    time.sleep(1)
+                    continue #验证码识别错误，再次执行
+                else:
+                    print(u"验证码识别成功 验证码：%s" %(result['Result']))
+
+                img_code = result['Result']
+                codeID = result['Id']
+                break
         else:
-            im = readimg(coder.content)
-            im.show()
-            img_code = input("please input code: ")
+            print(u"没有设置自动识别模块用户名、密码，无法执行")
+
         post_url = 'http://mp.weixin.qq.com/mp/verifycode'
         post_data = {
             'cert': timever,
