@@ -33,75 +33,70 @@ class WechatSogouApi(WechatSogouBasic):
             wechatid: 公众号id
             jieshao: 介绍
             renzhen: 认证，为空表示未认证
-            qrcode: 二维码
+            qrcode: 二维码 暂无
             img: 头像图片
             url: 文章地址
-            last_url: 最后一篇文章地址
+            last_url: 最后一篇文章地址 暂无
         """
         text = self._search_gzh_text(name, page)
+        
         try:
             page = etree.HTML(text)
         except:
             return ""
 
         img = list()
-        info_imgs = page.xpath(u"//div[@class='img-box']/img")
+        #头像
+        info_imgs = page.xpath(u"//div[@class='img-box']//img")
         for info_img in info_imgs:
             img.append(info_img.attrib['src'])
+        #文章列表
         url = list()
-        info_urls = page.xpath(u"//div[@target='_blank']")
+        info_urls = page.xpath(u"//div[@class='img-box']//a");
         for info_url in info_urls:
             url.append(info_url.attrib['href'])
+        
+        #微信号
+        wechatid = page.xpath(u"//label[@name='em_weixinhao']/text()");
 
-        last_url = list()
-        info_last_urls = page.xpath(u"//span[@class='sp-txt']/a[@target='_blank']")
-        for info_last_url in info_last_urls:
-            last_url.append(info_last_url.attrib['href'])
-
+        #公众号名称
         name = list()
-        wechatid = list()
+        name_list = page.xpath(u"//div[@class='txt-box']/p/a")
+        for name_item in name_list:
+            name.append(name_item.xpath('string(.)'))
+       
+        last_url = list()
         jieshao = list()
         renzhen = list()
-        info_instructions = page.xpath(u"//div[@class='txt-box']")
-        
         list_index = 0
+        #介绍、认证、最近文章
+        info_instructions = page.xpath(u"//ul[@class='news-list2']/li")
         for info_instruction in info_instructions:
             cache = self._get_elem_text(info_instruction)
             cache = cache.replace('red_beg', '').replace('red_end', '')
             cache_list = cache.split('\n')
-            cache_re = re.split(u'微信号：|功能介绍：|认证：|最近文章：', cache_list[0])
-            name.append(cache_re[0])
-
+            cache_re = re.split(u'功能介绍：|认证：|最近文章：', cache_list[0])
             if(cache.find("最近文章") == -1) :
                 last_url.insert(list_index,"")
             list_index += 1
-            wechatid.append(cache_re[1])
-            if "authnamewrite" in cache_re[2]:
-                jieshao.append(re.sub("authnamewrite\('[0-9]'\)", "", cache_re[2]))
-                renzhen.append(cache_re[3])
+            jieshao.append(re.sub("document.write\(authname\('[0-9]'\)\)", "", cache_re[1]))
+            if "authname" in cache_re[1]:
+                renzhen.append(cache_re[2])
             else:
-                jieshao.append(cache_re[2])
                 renzhen.append('')
 
-            
-
-        qrcodes = list()
-        info_qrcodes = page.xpath(u"//div[@class='pos-ico']/div/img")
-        
-        for info_qrcode in info_qrcodes:
-            qrcodes.append(info_qrcode.attrib['src'])
         returns = list()
-        for i in range(len(qrcodes)):
+        for i in range(len(name)):
             returns.append(
                 {
                     'name': name[i],
                     'wechatid': wechatid[i],
                     'jieshao': jieshao[i],
                     'renzhen': renzhen[i],
-                    'qrcode': qrcodes[i],
+                    'qrcode': '',
                     'img': img[i],
                     'url': url[i],
-                    'last_url': last_url[i]
+                    'last_url': ''
                 }
             )
         return returns
