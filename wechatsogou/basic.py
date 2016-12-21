@@ -151,7 +151,7 @@ class WechatSogouBasic(WechatSogouBase):
             json = kwargs.get('json', None)
             r = self._session.post(url, data=data, json=json, headers=headers, **kwargs)
         
-        logger.error(r.text)
+        #logger.error(r.text)
         if u'链接已过期' in r.text:
             return '链接已过期'
         if r.status_code == requests.codes.ok:
