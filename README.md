@@ -8,6 +8,12 @@
 基于搜狗微信搜索的微信公众号爬虫
 可以抓取指定公众号的文章信息
 
+# 赞助作者
+自由职业者，好汉们如果可能的话赞助一些让在下将开源事业进行到底，谢谢！！！
+
+<img src="https://github.com/jaryee/wechat_sogou_crawl/blob/master/screenshot/wx.png" width="250" />
+<img src="https://github.com/jaryee/wechat_sogou_crawl/blob/master/screenshot/zfb.png" width="250" />
+
 2016-12-21日，测试可以正常使用
 
 如果有问题，请提issue，或者发邮件到：jaryee@163.com联系我
