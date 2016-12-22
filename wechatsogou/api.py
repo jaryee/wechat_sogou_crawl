@@ -4,7 +4,7 @@ import re
 import requests
 import time
 from lxml import etree
-
+from wechatsogou.tools import *
 from .basic import WechatSogouBasic
 from .exceptions import *
 import json
@@ -139,42 +139,71 @@ class WechatSogouApi(WechatSogouBasic):
             gzhname: 公众号名称
             gzhqrcodes: 公众号二维码
             gzhurl: 公众号最近文章地址
+            page_count:共有多少页
 
         """
         text = self._search_article_text(name, page)
+        text = text.replace("amp;","")
         page = etree.HTML(text)
-        img = list()
-        info_imgs = page.xpath(u"//div[@class='wx-rb wx-rb3']/div[1]/a/img")
-        for info_img in info_imgs:
-            img.append(info_img.attrib['src'])
-        url = list()
-        info_urls = page.xpath(u"//div[@class='wx-rb wx-rb3']/div[2]/h4/a")
-        for info_url in info_urls:
-            url.append(info_url.attrib['href'])
-        name = list()
-        info_names = page.xpath(u"//div[@class='wx-rb wx-rb3']/div[2]/h4")
-        for info_name in info_names:
-            cache = self._get_elem_text(info_name)
-            cache = cache.replace('red_beg', '').replace('red_end', '')
-            name.append(cache)
+        #搜索到的总条数
+        page_count = page.xpath(u"//div[@class='mun']/text()")
+        page_count = page_count[0].replace(',','').replace('找到约','').replace('条结果','')
+
+        #文章信息
         zhaiyao = list()
-        info_zhaiyaos = page.xpath(u"//div[@class='wx-rb wx-rb3']/div[2]/p")
-        for info_zhaiyao in info_zhaiyaos:
-            cache = self._get_elem_text(info_zhaiyao)
-            cache = cache.replace('red_beg', '').replace('red_end', '')
-            zhaiyao.append(cache)
+        #摘要
+        zhaiyao_list = page.xpath(u"//ul[@class='news-list']/li//p[@class='txt-info']")
+        for zhaiyao_item in zhaiyao_list:
+            zhaiyao.append(zhaiyao_item.xpath('string(.)'))
+        
+        #标题
+        name = list()
+        info_names = page.xpath(u"//div[@class='txt-box']/h3/a")
+        for info_name in info_names:
+            name.append(info_name.xpath('string(.)'))
+        
+        #公众号名称
         gzhname = list()
+        gzhwxhao = list()
         gzhqrcodes = list()
         gzhurl = list()
-        info_gzhs = page.xpath(u"//div[@class='wx-rb wx-rb3']/div[2]/div/a")
+        info_gzhs = page.xpath(u"//div[@class='txt-box']/div[@class='s-p']/a")
         for info_gzh in info_gzhs:
-            gzhname.append(info_gzh.attrib['title'])
-            gzhqrcodes.append(info_gzh.attrib['data-encqrcodeurl'])
+            #gzhname.append(info_gzh.attrib['data-sourcename'])
+            #gzhwxhao.append(info_gzh.attrib['data-username'])
+            #gzhqrcodes.append(info_gzh.attrib['data-encqrcodeurl'])
             gzhurl.append(info_gzh.attrib['href'])
+
+        #文章URL
+        url = list()
+        info_urls = page.xpath(u"//div[@class='txt-box']/h3/a")
+        for info_url in info_urls:
+            url.append(info_url.attrib['href'])
+        
+        #文章时间
         time = list()
-        info_times = page.xpath(u"//div[@class='wx-rb wx-rb3']/div[2]/div/span/script/text()")
+        info_times = page.xpath(u"//div[@class='txt-box']/div[@class='s-p']")
         for info_time in info_times:
-            time.append(re.findall('vrTimeHandle552write\(\'(.*?)\'\)', info_time)[0])
+            time.append(info_time.attrib['t'])
+
+        #封面
+        img = list()
+        info_imgs = page.xpath(u"//ul[@class='news-list']/li")
+        for info_img in info_imgs:
+            img_box = info_img.xpath(u"div[@class='img-box']/a/img")
+            if len(img_box) > 0 :
+                #普通封面的
+                img.append(img_box[0].attrib['src'])
+            else:
+                #3张封面的
+                img_box = info_img.xpath(u"div[@class='txt-box']/div[@class='img-d']/a/span/img")
+                if len(img_box) > 0 :
+                    #拿第一个
+                    img.append(img_box[0].attrib['src'])
+                else:
+                    #没拿到
+                    img.append("")
+
         returns = list()
         for i in range(len(url)):
             returns.append(
@@ -183,10 +212,11 @@ class WechatSogouApi(WechatSogouBasic):
                     'url': url[i],
                     'img': img[i],
                     'zhaiyao': zhaiyao[i],
-                    'gzhname': gzhname[i],
-                    'gzhqrcodes': gzhqrcodes[i],
+                    'gzhname': list_or_empty(gzhname),
+                    'gzhqrcodes': list_or_empty(gzhqrcodes),
                     'gzhurl': gzhurl[i],
-                    'time': time[i]
+                    'time': time[i],
+                    'page_count':int(page_count)
                 }
             )
         return returns

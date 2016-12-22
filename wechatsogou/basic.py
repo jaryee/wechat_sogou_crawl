@@ -228,6 +228,7 @@ class WechatSogouBasic(WechatSogouBase):
             break
 
     def _ocr_for_get_gzh_article_by_url_text(self, url):
+        print(u"出现验证码，准备自动识别2")
         logger.debug('vcode appear, using _ocr_for_get_gzh_article_by_url_text')
         timestr = str(time.time()).replace('.', '')
         timever = timestr[0:13] + '.' + timestr[13:17]
@@ -391,6 +392,7 @@ class WechatSogouBasic(WechatSogouBase):
         text = self._get(url, 'get', host='mp.weixin.qq.com')
         
         if u'为了保护你的网络安全，请输入验证码' in text:
+            print u'为了保护你的网络安全，请输入验证码'
             self._ocr_for_get_gzh_article_by_url_text(url)
 
             text = self._get(url, 'get', host='mp.weixin.qq.com')
