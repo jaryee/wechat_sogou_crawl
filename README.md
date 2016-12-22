@@ -9,7 +9,7 @@
 可以抓取指定公众号的文章信息
 
 # 赞助作者
-自由职业者，好汉们如果可能的话赞助一些让在下将开源事业进行到底，谢谢！！！
+俺是自由职业者，好汉们如果可能的话赞助一些让俺将开源事业进行到底，谢谢！！！
 
 <img src="https://github.com/jaryee/wechat_sogou_crawl/blob/master/screenshot/wx.png" width="250" />
 <img src="https://github.com/jaryee/wechat_sogou_crawl/blob/master/screenshot/zfb.png" width="250" />
