@@ -69,7 +69,7 @@ for item in mp_list:
 
             if wz_item['type'] == '49':
                 #获取文章数据
-                time.sleep(1)
+                time.sleep(0.5)
                 article_info = wechats.deal_article(url=wz_item['content_url'])
                 #print('4')
                 # if(article_info['yuan'] == '') :

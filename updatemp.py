@@ -78,7 +78,7 @@ for item in mp_list:
                 print(wz_item['content_url'])
                 if not wz_item['content_url'] :
                     continue
-                time.sleep(1)
+                time.sleep(0.5)
                 article_info = wechats.deal_article(url=wz_item['content_url'])
                 if not article_info :
                     continue
@@ -109,7 +109,8 @@ for item in mp_list:
             mysql.table('mp_info').where({'_id':item['_id']}).save({'last_qunfa_id':cur_qunfa_id,'last_qufa_time':qunfa_time,'update_time':time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))})
     except KeyboardInterrupt:
         break
-    # except: #如果不想因为错误使程序退出，可以开启这两句代码
-    #     continue
+    except: #如果不想因为错误使程序退出，可以开启这两句代码
+        print u"出错，继续"
+        continue
             
 print('success')

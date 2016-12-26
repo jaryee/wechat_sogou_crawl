@@ -204,12 +204,14 @@ class WechatSogouBasic(WechatSogouBase):
                 'r': quote(self._vcode_url),
                 'v': 5
             }
+            user_agent = self._agent[random.randint(0, len(self._agent) - 1)]
             headers = {
-                "User-Agent": self._agent[random.randint(0, len(self._agent) - 1)],
+                "User-Agent": user_agent,
                 'Host': 'weixin.sogou.com',
                 'Referer': 'http://weixin.sogou.com/antispider/?from=%2f' + quote(
                     self._vcode_url.replace('http://', ''))
             }
+            #time.sleep(3)
             rr = self._session.post(post_url, post_data, headers=headers)
             remsg = eval(rr.content)
             if remsg['code'] == 3:
@@ -222,6 +224,29 @@ class WechatSogouBasic(WechatSogouBase):
             elif remsg['code'] != 0:
                 logger.error('cannot jiefeng because ' + remsg['msg'])
                 raise WechatSogouVcodeException('cannot jiefeng because ' + remsg['msg'])
+
+            #搜狗又增加验证码机制
+            time.sleep(0.05)
+            cookie_jar = cookielib.MozillaCookieJar()  
+            cookie_jar.set_cookie(cookielib.Cookie(version=0, name='SNUID', value=remsg['id'], port=None, port_specified=False, domain='sogou.com', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=None, expires=None, discard=True, comment=None, comment_url=None, rest={'HttpOnly': None}, rfc2109=False))  
+            self._session.cookies.update(cookie_jar)
+
+            pbsnuid = remsg['id'] #pb_cookie['SNUID'].value
+            pbsuv = ''#pb_cookie['SUV'].value
+            print pbsnuid
+            print pbsuv
+            pburl = 'http://pb.sogou.com/pv.gif?uigs_productid=webapp&type=antispider&subtype=0_seccodeInputSuccess&domain=weixin&suv=%s&snuid=%s&t=%s' %(pbsuv,pbsnuid,str(time.time())[0:10])
+            user_agent = self._agent[random.randint(0, len(self._agent) - 1)]
+            headers = {
+                "User-Agent": user_agent,
+                'Host': 'pb.sogou.com',
+                'Referer': 'http://weixin.sogou.com/antispider/?from=%2f' + quote(
+                    self._vcode_url.replace('http://', ''))
+            }
+            self._session.get(pburl, headers=headers)
+            
+            time.sleep(0.5)
+
             self._cache.set(config.cache_session_name, self._session)
             print(u"识别成功，继续执行")
             logger.error('verify code ocr: ' + remsg['msg'])
