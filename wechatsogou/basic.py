@@ -236,7 +236,7 @@ class WechatSogouBasic(WechatSogouBase):
             print pbsnuid
             print pbsuv
             pburl = 'http://pb.sogou.com/pv.gif?uigs_productid=webapp&type=antispider&subtype=0_seccodeInputSuccess&domain=weixin&suv=%s&snuid=%s&t=%s' %(pbsuv,pbsnuid,str(time.time())[0:10])
-            user_agent = self._agent[random.randint(0, len(self._agent) - 1)]
+            
             headers = {
                 "User-Agent": user_agent,
                 'Host': 'pb.sogou.com',
