@@ -14,7 +14,10 @@
 <img src="https://github.com/jaryee/wechat_sogou_crawl/blob/master/screenshot/wx.png" width="250" />
 <img src="https://github.com/jaryee/wechat_sogou_crawl/blob/master/screenshot/zfb.png" width="250" />
 
-2016-12-21日，测试可以正常使用
+兄弟我弄了个淘宝店，有时间的兄弟给捧个场啊，新店需要信誉积分，跪谢！只要一块钱，牛逼代码领回家
+https://item.taobao.com/item.htm?spm=a230r.1.14.16.PRhaio&id=543333631871&ns=1&abbucket=6#detail
+
+2017-1-11日，测试可以正常使用
 
 如果有问题，请提issue，或者发邮件到：jaryee@163.com联系我
 
