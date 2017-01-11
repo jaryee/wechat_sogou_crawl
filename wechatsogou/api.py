@@ -424,11 +424,8 @@ class WechatSogouApi(WechatSogouBasic):
             content: 文章内容
         """
         text = self._get_gzh_article_text(url)
-        yuan_url = re.findall('var msg_link = "(.*?)";', text)
-        if yuan_url :
-            yuan_url = yuan_url[0].replace('amp;', '')
-        else :
-            yuan_url = ""
+        
+        yuan_url = self.deal_get_real_url(url)
 
         comment = self.deal_article_comment(text=text)
         content_html = self.deal_article_content(text=text)
@@ -648,4 +645,13 @@ class WechatSogouApi(WechatSogouBasic):
         except AttributeError:
             logger.error('deal_mass_send_msg_page error, please delete cache file')
             raise WechatSogouHistoryMsgException('deal_mass_send_msg_page error, please delete cache file')
+
+    #获取搜狗微信文章上的真实链接
+    def deal_get_real_url(self, url):
+        try:
+            url = url + '&uin=MjExMTY2MjUzNg=='
+            text = requests.get(url,allow_redirects=False)
+            return text.headers['Location']
+        except:
+            return ""
 
