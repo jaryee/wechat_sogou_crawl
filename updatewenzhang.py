@@ -102,8 +102,9 @@ for item in mp_list:
                                                                             'comment_count': int(article_info['comment']['elected_comment_total_cnt'])})
     except KeyboardInterrupt:
         break
-    # except: #如果不想因为错误使程序退出，可以开启这两句代码
-    #     continue
+    except: #如果不想因为错误使程序退出，可以开启这两句代码
+        print u"出错，继续"
+        continue
                 
 print('success')
 

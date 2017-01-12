@@ -418,9 +418,12 @@ class WechatSogouBasic(WechatSogouBase):
         
         if u'为了保护你的网络安全，请输入验证码' in text:
             print u'为了保护你的网络安全，请输入验证码'
-            self._ocr_for_get_gzh_article_by_url_text(url)
+            try:
+                self._ocr_for_get_gzh_article_by_url_text(url)
 
-            text = self._get(url, 'get', host='mp.weixin.qq.com')
+                text = self._get(url, 'get', host='mp.weixin.qq.com')
+            except:
+                text = ""
         return text
 
     def _get_gzh_article_gzh_by_url_dict(self, text, url):
