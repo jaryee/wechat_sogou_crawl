@@ -119,8 +119,12 @@ class WechatSogouApi(WechatSogouBasic):
             img: 头像图片
             url: 最近文章地址
         """
-        info = self.search_gzh_info(wechatid, 1)
-        return info[0] if info else False
+        try:
+            info = self.search_gzh_info(wechatid, 1)
+            return info[0] if info else False
+        except:
+            return ""
+
 
     def search_article_info(self, name, page=1):
         """搜索文章
