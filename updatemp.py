@@ -35,9 +35,11 @@ for item in mp_list:
         #查看一下该号今天是否已经发送文章
         last_qunfa_id = item['last_qunfa_id']
         last_qunfa_time = item['last_qufa_time']
-        if(last_qunfa_time and last_qunfa_time > now_time) :
-            print("zhua guo le")
-            continue #今天已经抓过了，不需要再重新抓了
+
+        #因为有些号一天可以群发好几次，所以这个判断就没有意义了
+        # if(last_qunfa_time and last_qunfa_time > now_time) :
+        #     print("zhua guo le")
+        #     continue #今天已经抓过了，不需要再重新抓了
 
         cur_qunfa_id = last_qunfa_id
         wz_url = ""
@@ -60,6 +62,7 @@ for item in mp_list:
             print('guo qi sz chong xin huo qu success')
             wz_url = wechat_info['url'];
             wz_list = wechats.get_gzh_message(url=wz_url)
+            mysql.where_sql = " _id=%s" %(item['_id'])
             mysql.table('mp_info').where({'_id':item['_id']}).save({'wz_url':wechat_info['url'],'logo_url':wechat_info['img'],'qr_url':wechat_info['qrcode']})
         #type==49表示是图文消息
         qunfa_time = ''
@@ -106,7 +109,8 @@ for item in mp_list:
 
         #更新最新推送ID
         if(last_qunfa_id < cur_qunfa_id):
-            mysql.table('mp_info').where({'_id':item['_id']}).save({'last_qunfa_id':cur_qunfa_id,'last_qufa_time':qunfa_time,'update_time':time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))})
+            mysql.where_sql = " _id=%s" %(item['_id'])
+            mysql.table('mp_info').save({'last_qunfa_id':cur_qunfa_id,'last_qufa_time':qunfa_time,'update_time':time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))})
     except KeyboardInterrupt:
         break
     except: #如果不想因为错误使程序退出，可以开启这两句代码

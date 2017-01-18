@@ -59,7 +59,8 @@ for item in mp_list:
             print('guo qi sz chong xin huo qu success')
             wz_url = wechat_info['url'];
             wz_list = wechats.get_gzh_message(url=wz_url)
-            mysql.table('mp_info').where({'_id':item['_id']}).save({'wz_url':wechat_info['url'],'logo_url':wechat_info['img'],'qr_url':wechat_info['qrcode']})
+            mysql.where_sql = " _id=%s" %(item['_id'])
+            mysql.table('mp_info').save({'wz_url':wechat_info['url'],'logo_url':wechat_info['img'],'qr_url':wechat_info['qrcode']})
         #type==49表示是图文消息
         #print('3')
         for wz_item in wz_list :
@@ -71,15 +72,11 @@ for item in mp_list:
                 #获取文章数据
                 time.sleep(0.5)
                 article_info = wechats.deal_article(url=wz_item['content_url'])
-                #print('4')
-                # if(article_info['yuan'] == '') :
-                #     continue
-                #获取数据库记录
-                #mysql.where_sql = "msg_index=%d" %(wz_item['main'])
-                mysql.where_sql = "qunfa_id=%d and msg_index=%d" %(wz_item['qunfa_id'],wz_item['main'])
+                mysql.where_sql = " mp_id=%d and qunfa_id=%d and msg_index=%d" %(item['_id'],wz_item['qunfa_id'],wz_item['main'])
                 #print(mysql.where_sql)
                 wz_data = mysql.table('wenzhang_info').find(1)
                 if not wz_data :
+                    print(u"没有找到对应文章")
                     continue
 
                 #获取当前的数据
@@ -97,7 +94,8 @@ for item in mp_list:
                                                 'comment_count': int(article_info['comment']['elected_comment_total_cnt'])-comment_count})
                 #print('5')
             #更新文章总阅读数
-            mysql.table('wenzhang_info').where({'_id':wz_data['_id']}).save({'read_count':int(article_info['comment']['read_num']),
+            mysql.where_sql = " _id=%s" %(wz_data['_id'])
+            mysql.table('wenzhang_info').save({'read_count':int(article_info['comment']['read_num']),
                                                                             'like_count':int(article_info['comment']['like_num']),
                                                                             'comment_count': int(article_info['comment']['elected_comment_total_cnt'])})
     except KeyboardInterrupt:
