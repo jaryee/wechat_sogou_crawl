@@ -18,6 +18,15 @@ logger = logging.getLogger()
 # 搜索API实例
 wechats = WechatSogouApi()
 
+#如果想使用外部cookie，主要是为了实现搜狗微信登录状态
+#你需要安装chrom浏览器，然后给浏览器安装EditThisCooke这个插件
+#1、使用Chrom浏览器登录搜狗微信
+#2、使用EditThisCooke插件复制当前Cookie信息
+#3、把cookie信息复制到代码目录下的cookies.txt文件
+#4、开启下面这行语句
+#wechats = WechatSogouApi(cookies_file={'file_name':'cookies.txt'})  #使用外部cookie
+
+
 #数据库实例
 mysql.order_sql = " order by _id desc"
 mysql = mysql('mp_info')

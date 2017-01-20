@@ -66,6 +66,7 @@ class WechatSogouBasic(WechatSogouBase):
         cookies_file = kwargs.get('cookies_file')
         if cookies_file:
             #使用外部cookies
+            print(u"使用外部cookies文件加载")
             cookie_jar = cookielib.MozillaCookieJar()  
             cookies = open(cookies_file.get('file_name')).read()
             for cookie in json.loads(cookies):  
@@ -175,8 +176,10 @@ class WechatSogouBasic(WechatSogouBase):
         Raises:
             WechatSogouVcodeException: 解封失败，可能验证码识别失败
         """
-        while(True) :
+        max_count = 0
+        while(max_count < 10) :
             print(u"出现验证码，准备自动识别")
+            max_count += 1
             logger.debug('vcode appear, using _jiefeng')
             codeurl = 'http://weixin.sogou.com/antispider/util/seccode.php?tc=' + str(time.time())[0:10]
             coder = self._session.get(codeurl)
@@ -185,116 +188,120 @@ class WechatSogouBasic(WechatSogouBase):
             if hasattr(self, '_ocr'):
                 result = self._ocr.create(coder.content, 3060)
                 if not result.has_key('Result') :
-                    print(u"验证码识别错误,错误原因：%s" %(result['Error']))
+                    print(u"若快识别失败，1秒后更换验证码再次尝试，尝试次数：%d" %(max_count))
                     time.sleep(1)
                     continue #验证码识别错误，再次执行
                 else:
                     print(u"验证码识别成功 验证码：%s" %(result['Result']))
 
-                img_code = result['Result']
-                codeID = result['Id']
+                    img_code = result['Result']
+                    codeID = result['Id']
+
+                    post_url = 'http://weixin.sogou.com/antispider/thank.php'
+                    post_data = {
+                        'c': img_code,
+                        'r': quote(self._vcode_url),
+                        'v': 5
+                    }
+                    user_agent = self._agent[random.randint(0, len(self._agent) - 1)]
+                    headers = {
+                        "User-Agent": user_agent,
+                        'Host': 'weixin.sogou.com',
+                        'Referer': 'http://weixin.sogou.com/antispider/?from=%2f' + quote(
+                            self._vcode_url.replace('http://', ''))
+                    }
+                    #time.sleep(3)
+                    rr = self._session.post(post_url, post_data, headers=headers)
+                    remsg = eval(rr.content)
+                    if remsg['code'] != 0:
+                        print(u"搜狗返回验证码错误，1秒后更换验证码再次启动尝试，尝试次数：%d" %(max_count))
+                        time.sleep(1)
+                        continue
+
+                    #搜狗又增加验证码机制
+                    time.sleep(0.05)
+                    cookie_jar = cookielib.MozillaCookieJar()  
+                    cookie_jar.set_cookie(cookielib.Cookie(version=0, name='SNUID', value=remsg['id'], port=None, port_specified=False, domain='sogou.com', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=None, expires=None, discard=True, comment=None, comment_url=None, rest={'HttpOnly': None}, rfc2109=False))  
+                    self._session.cookies.update(cookie_jar)
+
+                    pbsnuid = remsg['id'] #pb_cookie['SNUID'].value
+                    pbsuv = ''#pb_cookie['SUV'].value
+                    print pbsnuid
+                    print pbsuv
+                    pburl = 'http://pb.sogou.com/pv.gif?uigs_productid=webapp&type=antispider&subtype=0_seccodeInputSuccess&domain=weixin&suv=%s&snuid=%s&t=%s' %(pbsuv,pbsnuid,str(time.time())[0:10])
+                    
+                    headers = {
+                        "User-Agent": user_agent,
+                        'Host': 'pb.sogou.com',
+                        'Referer': 'http://weixin.sogou.com/antispider/?from=%2f' + quote(
+                            self._vcode_url.replace('http://', ''))
+                    }
+                    self._session.get(pburl, headers=headers)
+                    
+                    time.sleep(0.5)
+                    
+                    print(u"搜狗返回验证码识别成功，继续执行")
+                    self._cache.set(config.cache_session_name, self._session)
+                    logger.error('verify code ocr: ' + remsg['msg'])
+                    break
                 
             else:
                 print(u"没有设置自动识别模块用户名、密码，无法执行")
                 break
 
-            post_url = 'http://weixin.sogou.com/antispider/thank.php'
-            post_data = {
-                'c': img_code,
-                'r': quote(self._vcode_url),
-                'v': 5
-            }
-            user_agent = self._agent[random.randint(0, len(self._agent) - 1)]
-            headers = {
-                "User-Agent": user_agent,
-                'Host': 'weixin.sogou.com',
-                'Referer': 'http://weixin.sogou.com/antispider/?from=%2f' + quote(
-                    self._vcode_url.replace('http://', ''))
-            }
-            #time.sleep(3)
-            rr = self._session.post(post_url, post_data, headers=headers)
-            remsg = eval(rr.content)
-            if remsg['code'] == 3:
-                #验证码出错了，重新处理
-                print("verify code error")
-                logger.error('verify code erro: ' + remsg['msg'])
-                #self._ocr.report_error(codeID)
-                #continue
-                raise WechatSogouVcodeException('cannot jiefeng because ' + remsg['msg'])
-            elif remsg['code'] != 0:
-                logger.error('cannot jiefeng because ' + remsg['msg'])
-                raise WechatSogouVcodeException('cannot jiefeng because ' + remsg['msg'])
 
-            #搜狗又增加验证码机制
-            time.sleep(0.05)
-            cookie_jar = cookielib.MozillaCookieJar()  
-            cookie_jar.set_cookie(cookielib.Cookie(version=0, name='SNUID', value=remsg['id'], port=None, port_specified=False, domain='sogou.com', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=None, expires=None, discard=True, comment=None, comment_url=None, rest={'HttpOnly': None}, rfc2109=False))  
-            self._session.cookies.update(cookie_jar)
-
-            pbsnuid = remsg['id'] #pb_cookie['SNUID'].value
-            pbsuv = ''#pb_cookie['SUV'].value
-            print pbsnuid
-            print pbsuv
-            pburl = 'http://pb.sogou.com/pv.gif?uigs_productid=webapp&type=antispider&subtype=0_seccodeInputSuccess&domain=weixin&suv=%s&snuid=%s&t=%s' %(pbsuv,pbsnuid,str(time.time())[0:10])
             
-            headers = {
-                "User-Agent": user_agent,
-                'Host': 'pb.sogou.com',
-                'Referer': 'http://weixin.sogou.com/antispider/?from=%2f' + quote(
-                    self._vcode_url.replace('http://', ''))
-            }
-            self._session.get(pburl, headers=headers)
-            
-            time.sleep(0.5)
-
-            self._cache.set(config.cache_session_name, self._session)
-            print(u"识别成功，继续执行")
-            logger.error('verify code ocr: ' + remsg['msg'])
-            break
 
     def _ocr_for_get_gzh_article_by_url_text(self, url):
         print(u"出现验证码，准备自动识别2")
         logger.debug('vcode appear, using _ocr_for_get_gzh_article_by_url_text')
-        timestr = str(time.time()).replace('.', '')
-        timever = timestr[0:13] + '.' + timestr[13:17]
-        codeurl = 'http://mp.weixin.qq.com/mp/verifycode?cert=' + timever
-        coder = self._session.get(codeurl)
+        
         if hasattr(self, '_ocr'):
             max_count = 0
-            while(max_count < 5):
+            while(max_count < 10):
                 max_count += 1
+                timestr = str(time.time()).replace('.', '')
+                timever = timestr[0:13] + '.' + timestr[13:17]
+                codeurl = 'http://mp.weixin.qq.com/mp/verifycode?cert=' + timever
+                coder = self._session.get(codeurl)
                 logger.debug('vcode appear, using _ocr_for_get_gzh_article_by_url_text')
                 result = self._ocr.create(coder.content, 2040)
                 if not result.has_key('Result') :
-                    print(u"验证码识别错误,错误原因：%s" %(result['Error']))
+                    print(u"若快识别失败，1秒后更换验证码再次尝试，尝试次数：%d" %(max_count))
                     time.sleep(1)
                     continue #验证码识别错误，再次执行
                 else:
-                    print(u"验证码识别成功 验证码：%s" %(result['Result']))
+                    print(u"若快识别成功 验证码：%s" %(result['Result']))
 
-                img_code = result['Result']
-                codeID = result['Id']
+                    img_code = result['Result']
+                    codeID = result['Id']
+
+                    post_url = 'http://mp.weixin.qq.com/mp/verifycode'
+                    post_data = {
+                        'cert': timever,
+                        'input': img_code
+                    }
+                    headers = {
+                        "User-Agent": self._agent[random.randint(0, len(self._agent) - 1)],
+                        'Host': 'mp.weixin.qq.com',
+                        'Referer': url
+                    }
+                    rr = self._session.post(post_url, post_data, headers=headers)
+                    remsg = eval(rr.text)
+                    if remsg['ret'] != 0:
+                        print(u"搜狗返回验证码错误，1秒后更换验证码再次启动尝试，尝试次数：%d" %(max_count))
+                        time.sleep(1)
+                        continue
+                    
+                    print(u"搜狗返回验证码识别成功，继续执行")
+                    self._cache.set(config.cache_session_name, self._session)
+                    logger.debug('ocr ', remsg['errmsg'])
+                    break
+
                 break
         else:
             print(u"没有设置自动识别模块用户名、密码，无法执行")
 
-        post_url = 'http://mp.weixin.qq.com/mp/verifycode'
-        post_data = {
-            'cert': timever,
-            'input': img_code
-        }
-        headers = {
-            "User-Agent": self._agent[random.randint(0, len(self._agent) - 1)],
-            'Host': 'mp.weixin.qq.com',
-            'Referer': url
-        }
-        rr = self._session.post(post_url, post_data, headers=headers)
-        remsg = eval(rr.text)
-        if remsg['ret'] != 0:
-            logger.error('cannot jiefeng get_gzh_article  because ' + remsg['errmsg'])
-            raise WechatSogouVcodeException('cannot jiefeng get_gzh_article  because ' + remsg['errmsg'])
-        self._cache.set(config.cache_session_name, self._session)
-        logger.debug('ocr ', remsg['errmsg'])
 
     def _replace_html(self, s):
         """替换html‘&quot;’等转义内容为正常内容
