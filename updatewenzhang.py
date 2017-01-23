@@ -85,7 +85,7 @@ for item in mp_list:
                 #print(mysql.where_sql)
                 wz_data = mysql.table('wenzhang_info').find(1)
                 if not wz_data :
-                    print(u"没有找到对应文章")
+                    print(u"公众号有新文章了，请执行Updtaemp.py进行抓取")
                     continue
 
                 #获取当前的数据
