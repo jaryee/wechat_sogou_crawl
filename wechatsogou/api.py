@@ -79,10 +79,16 @@ class WechatSogouApi(WechatSogouBasic):
             if(cache.find("最近文章") == -1) :
                 last_url.insert(list_index,"")
             list_index += 1
-            jieshao.append(re.sub("document.write\(authname\('[0-9]'\)\)", "", cache_re[1]))
-            if "authname" in cache_re[1]:
-                renzhen.append(cache_re[2])
+
+            if(len(cache_re) > 1):
+                jieshao.append(re.sub("document.write\(authname\('[0-9]'\)\)", "", cache_re[1]))
+                if "authname" in cache_re[1]:
+                    renzhen.append(cache_re[2])
+                else:
+                    renzhen.append('')
             else:
+                #没取到，都为空吧
+                jieshao.append('')
                 renzhen.append('')
 
         returns = list()

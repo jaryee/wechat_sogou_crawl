@@ -45,7 +45,7 @@ for add_item in add_list :
                                                 'last_qunfa_id': 0,
                                                 'create_time':time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))})
             else:
-                print("exist")
+                print(u"已经存在的公众号")
         elif add_item['name']:
             #获取对应信息
             print("add by name")
@@ -70,6 +70,8 @@ for add_item in add_list :
                                 'wz_url': wx_item['url'],
                                 'last_qunfa_id': 0,
                                 'create_time':time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))})
+                else:
+                    print(u"已经存在的公众号")
                 
         #删除已添加项
         mysql.table('add_mp_list').where({'_id':add_item['_id']}).delete()
