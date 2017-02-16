@@ -17,7 +17,9 @@
 兄弟我弄了个淘宝店，有时间的兄弟给捧个场啊，新店需要信誉积分，跪谢！只要一块钱，就能温暖你我他
 https://item.taobao.com/item.htm?spm=a230r.1.14.16.PRhaio&id=543333631871&ns=1&abbucket=6#detail
 
-2017-1-20日，测试可以正常使用
+2017-2-16日，测试可以正常使用
+使用教程大家可以去我的微博查看：
+http://blog.csdn.net/niuxiaojia09/article/details/55260770
 
 如果有问题，请提issue，或者发邮件到：jaryee@163.com联系我
 
