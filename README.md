@@ -17,7 +17,7 @@
 兄弟我弄了个淘宝店，有时间的兄弟给捧个场啊，新店需要信誉积分，跪谢！只要一块钱，就能温暖你我他
 https://item.taobao.com/item.htm?spm=a230r.1.14.16.PRhaio&id=543333631871&ns=1&abbucket=6#detail
 
-2017-2-16日，测试可以正常使用
+2017-3-21日，测试可以正常使用
 使用教程大家可以去我的微博查看：
 http://blog.csdn.net/niuxiaojia09/article/details/55260770
 
@@ -26,8 +26,8 @@ http://blog.csdn.net/niuxiaojia09/article/details/55260770
 新建QQ群：482588657  有兴趣同学可以进来一起讨论
 
 2017-1-20 增加如何使程序进入搜狗微信登录状态的说明，在Updatemp.py和UpdateWenzhang.py中都有操作说明
+2017-3-21 在API.py中增加把文章本地化的函数，可以根据自己的需要把文章下载到本地
 
-20
 # 项目使用
 
 一、使用说明

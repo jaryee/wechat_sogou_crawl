@@ -9,6 +9,7 @@ import datetime
 import time
 import logging
 import logging.config
+import random
 
 # 日志
 logging.config.fileConfig('logging.conf')
@@ -41,15 +42,10 @@ now_time = datetime.datetime(now_time.year, now_time.month, now_time.day, 0, 0, 
 
 for item in mp_list:
     try:
-        time.sleep(1)
+        time.sleep(random.randrange(1,3))
         #查看一下该号今天是否已经发送文章
         last_qunfa_id = item['last_qunfa_id']
         last_qunfa_time = item['last_qufa_time']
-
-        #因为有些号一天可以群发好几次，所以这个判断就没有意义了
-        # if(last_qunfa_time and last_qunfa_time > now_time) :
-        #     print("zhua guo le")
-        #     continue #今天已经抓过了，不需要再重新抓了
 
         cur_qunfa_id = last_qunfa_id
         wz_url = ""
@@ -102,7 +98,11 @@ for item in mp_list:
                 sourceurl = wz_item['source_url']
                 if len(sourceurl) >= 300 :
                     sourceurl = ''
-                
+
+                #如果想把文章下载到本地，请开启下面的语句,请确保已经安装：urllib2，httplib2，BeautifulSoup4
+                #返回值为下载的html文件路径，可以自己保存到数据库
+                #index_html_path = wechats.down_html(article_info['yuan'],wz_item['title'])
+
                 mysql.table('wenzhang_info').add({'title':wz_item['title'],
                                                 'source_url':sourceurl,
                                                 'content_url':article_info['yuan'],

@@ -9,7 +9,11 @@ from .basic import WechatSogouBasic
 from .exceptions import *
 import json
 import logging
-
+import urlparse
+import urllib2
+import httplib2
+import codecs,os
+from bs4 import BeautifulSoup
 logger = logging.getLogger()
 
 
@@ -664,4 +668,130 @@ class WechatSogouApi(WechatSogouBasic):
             return text.headers['Location']
         except:
             return ""
+
+    #下载文章到本地
+    def down_html(self, url,dir_name):
+        try:
+            #获取biz
+            params =  urlparse.urlsplit(url).query
+            params = urlparse.parse_qs(params,True)
+            if not params.has_key('__biz') :
+                #可能是搜狗链接，先转成微信连接
+                url = self.deal_get_real_url(url)
+
+            url = url.replace('\\x26','&')
+            url = url.replace('x26','&')
+
+            print(url)
+            h = httplib2.Http(timeout=30)
+            html = self._get_gzh_article_text(url)
+            content = html
+
+            # 正则表达式javascript里的获取相关变量
+            ct = re.findall('var ct = "(.*?)";', content)[0]
+            msg_cdn_url = re.findall('var msg_cdn_url = "(.*?)";', content)[0]
+            nickname = re.findall('var nickname = "(.*?)";', content)[0]
+            if(nickname == ""):
+                nickname = "not has name"
+            if(ct == ""):
+                ct = time.time()
+
+            ctime = time.strftime("%Y%m%d%H%M%S", time.localtime(int(ct))) # int将字符串转成数字，不区分int和long, 这里将时间秒数转成日期格式
+            # 建立文件夹
+            #编码转换
+            if isinstance(dir_name, unicode): 
+                dir_name = dir_name.encode('GB18030','ignore')
+            else: 
+                dir_name = dir_name.decode('utf-8','ignore').encode('GB18030','ignore')
+            
+            #print 
+            if isinstance(nickname, unicode): 
+                nickname = nickname.encode('GB18030','ignore')
+            else: 
+                if chardet.detect(nickname)['encoding'] == 'KOI8-R' :
+                    print("KOI8")
+                    nickname = nickname.decode('KOI8-R','ignore').encode('GB18030','ignore')
+                else:
+                    print("GB18030")
+                    nickname = nickname.decode('utf-8','ignore').encode('GB18030','ignore')
+
+            dir = 'WeiXinGZH/' + nickname + '/' + ctime + '/' + dir_name + '/'
+            #dir = 'WeiXinGZH/' + dir_name + '/'
+            dir = dir.decode('gb2312','ignore')
+            dir = dir.replace("?", "")
+            dir = dir.replace("\\", "")
+            dir = dir.replace("*", "")
+            dir = dir.replace(":", "")
+            dir = dir.replace('\"', "")
+            dir = dir.replace("<", "")
+            dir = dir.replace(">", "")
+            dir = dir.replace("|", "")
+
+
+            try :
+                os.makedirs(dir)  # 建立相应的文件夹
+                
+            except :
+                #不处理
+                errormsg = 'none'
+
+            # 下载封面
+            url = msg_cdn_url
+            print u'正在下载文章：' + url
+            resp, contentface = h.request(url)
+            
+            file_name = dir + 'cover.jpg'
+            codecs.open(file_name,mode='wb').write(contentface)
+
+            # 下载其他图片
+            soup = BeautifulSoup(content, 'html.parser')
+            count = 0
+            #logger.error(html)
+            err_count = 0
+            for link in soup.find_all('img') :
+                try:
+                    err_count += 1
+                    if(err_count > 200) :
+                        break #防止陷阱
+
+                    if None != link.get('data-src') :
+                        count = count + 1
+                        orurl = link.get('data-src')
+                        url = orurl.split('?')[0]  # 重新构造url，原来的url有一部分无法下载
+                        #print u'正在下载：' + url
+                        resp, content = h.request(url)
+
+                        matchurlvalue = re.search(r'wx_fmt=(?P<wx_fmt>[^&]*)', orurl) # 无参数的可能是gif，也有可能是jpg
+                        if None != matchurlvalue:
+                            wx_fmt = matchurlvalue.group('wx_fmt') # 优先通过wx_fmt参数的值判断文件类型
+                        else:
+                            wx_fmt = binascii.b2a_hex(content[0:4]) # 读取前4字节转化为16进制字符串
+
+                        #print wx_fmt
+                        phototype = { 'jpeg': '.jpg', 'gif' : '.gif', 'png' : '.png', 'jpg' : '.jpg', '47494638' : '.gif', 'ffd8ffe0' : '.jpg', 'ffd8ffe1' : '.jpg', 'ffd8ffdb' : '.jpg', 'ffd8fffe' : '.jpg', 'other' : '.jpg', '89504e47' : '.png' }  # 方便写文件格式
+                        file_name = 'Picture' + str(count) + phototype[wx_fmt]
+                        file_path = dir + file_name
+                        open(file_path, 'wb').write(content)
+
+                        #图片替换成本地地址
+                        re_url = 'data-src="%s(.+?)"' % (url[:-5])
+                        re_pic = 'src="%s"' % (file_name)
+                        html = re.sub(re_url, re_pic, html)
+                except:
+                    continue
+
+            with open("%sindex.html" % (dir), "wb") as code :
+                code.write(html)
+
+            print u'文章下载完成'
+            ret_path = os.path.abspath('.')
+            ret_path = ret_path.replace('\\', "/")
+            ret_path = "%s/%sindex.html" %(ret_path.decode('GB18030').encode('utf-8'),dir)
+            #print(ret_path)
+        #except:
+        except WechatSogouHistoryMsgException:
+            print u'文章内容有异常编码，无法下载'
+            return ""
+        return ret_path
+
 
