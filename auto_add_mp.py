@@ -58,7 +58,7 @@ for add_item in add_list :
                 print(wx_item['name'])
                 mysql.where_sql = "wx_hao ='" + wx_item['wechatid'] + "'"
                 print(mysql.where_sql)
-                mp_data = mysql.find(1)
+                mp_data = mysql.table('mp_info').find(1)
                 if not mp_data :
                     print(wx_item['name'].decode("utf-8"))
                     mysql.table('mp_info').add({ 'name':wx_item['name'],
