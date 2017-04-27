@@ -163,7 +163,7 @@ class WechatSogouBasic(WechatSogouBase):
                 print(u'用户您好，您的访问过于频繁，为确认本次访问为正常用户行为，需要您协助验证')
                 raise WechatSogouVcodeException('weixin.sogou.com verification code')
         else:
-            logger.error('requests status_code error', r.status_code)
+            logger.error('requests status_code error' + r.status_code)
             raise WechatSogouRequestsException('requests status_code error', r.status_code)
         return r.text
 

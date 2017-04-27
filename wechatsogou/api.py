@@ -338,9 +338,12 @@ class WechatSogouApi(WechatSogouBasic):
         else:
             raise WechatSogouException('deal_content need param url or text')
 
-        content_html = re.findall(u'<div class="rich_media_content " id="js_content">(.*?)</div>', text, re.S)
-        if content_html :
-            content_html = content_html[0]
+        bsObj = BeautifulSoup(text)
+        content_text = bsObj.find("div", {"class":"rich_media_content", "id":"js_content"})
+        content_html = content_text.get_text()
+        # content_html = re.findall(u'<div class="rich_media_content " id="js_content">(.*?)</div>', text, re.S)
+        # if content_html :
+        #     content_html = content_html[0]
 
         # content_rich = re.sub(u'<(?!img|br).*?>', '', content_html)
         # pipei = re.compile(u'<img(.*?)src="(.*?)"(.*?)/>')
@@ -441,7 +444,7 @@ class WechatSogouApi(WechatSogouBasic):
         
         yuan_url = self.deal_get_real_url(url)
 
-        comment = self.deal_article_comment(text=text)
+        comment = '' #2017-04-27搜狗微信取消评论数据self.deal_article_comment(text=text)
         content_html = self.deal_article_content(text=text)
         retu = {
             'yuan': yuan_url,
