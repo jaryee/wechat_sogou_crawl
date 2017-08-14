@@ -89,23 +89,18 @@ for item in mp_list:
                 print(wz_item['content_url'])
                 if not wz_item['content_url'] :
                     continue
-                time.sleep(0.5)
-                article_info = wechats.deal_article(url=wz_item['content_url'])
-                if not article_info :
-                    continue
-                if not article_info['yuan'] :
-                    continue
+                
                 sourceurl = wz_item['source_url']
                 if len(sourceurl) >= 300 :
                     sourceurl = ''
 
                 #如果想把文章下载到本地，请开启下面的语句,请确保已经安装：urllib2，httplib2，BeautifulSoup4
                 #返回值为下载的html文件路径，可以自己保存到数据库
-                #index_html_path = wechats.down_html(article_info['yuan'],wz_item['title'])
+                #index_html_path = wechats.down_html(wz_item['content_url'],wz_item['title'])
 
                 mysql.table('wenzhang_info').add({'title':wz_item['title'],
                                                 'source_url':sourceurl,
-                                                'content_url':article_info['yuan'],
+                                                'content_url':wz_item['content_url'],
                                                 'cover_url':wz_item['cover'],
                                                 'description':wz_item['digest'],
                                                 'date_time': time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(wz_item['datetime'])),

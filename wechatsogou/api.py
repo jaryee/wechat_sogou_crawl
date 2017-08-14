@@ -442,7 +442,7 @@ class WechatSogouApi(WechatSogouBasic):
         """
         text = self._get_gzh_article_text(url)
         
-        yuan_url = self.deal_get_real_url(url)
+        yuan_url = url #self.deal_get_real_url(url) 2017-5-3搜狗升级获取永久链接方法
 
         comment = '' #2017-04-27搜狗微信取消评论数据self.deal_article_comment(text=text)
         content_html = self.deal_article_content(text=text)
