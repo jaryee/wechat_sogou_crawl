@@ -34,6 +34,7 @@ mysql = mysql('mp_info')
 #循环获取数据库中所有公众号
 mysql.order_sql = " order by _id desc"
 mp_list = mysql.find(0)
+
 succ_count = 0
 
 now_time = datetime.datetime.today()
@@ -48,14 +49,7 @@ for item in mp_list:
         last_qunfa_time = item['last_qufa_time']
 
         cur_qunfa_id = last_qunfa_id
-        wz_url = ""
-        if item.has_key('wz_url') :
-            wz_url = item['wz_url']
-        else :
-            wechat_info = wechats.get_gzh_info(item['wx_hao'])
-            if not wechat_info.has_key('url') :
-                continue
-            wz_url = wechat_info['url'];
+        wz_url = item['wz_url']
             
         print(item['name'])
         
@@ -63,7 +57,7 @@ for item in mp_list:
         wz_list = wechats.get_gzh_message(url=wz_url)
         if u'链接已过期' in wz_list:
             wechat_info = wechats.get_gzh_info(item['wx_hao'])
-            if not wechat_info.has_key('url') :
+            if 'url' not in wechat_info :
                 continue
             print('guo qi sz chong xin huo qu success')
             wz_url = wechat_info['url'];
@@ -98,6 +92,9 @@ for item in mp_list:
                 #返回值为下载的html文件路径，可以自己保存到数据库
                 #index_html_path = wechats.down_html(wz_item['content_url'],wz_item['title'])
 
+                #获取文章正文
+                wz_content = wechats.deal_article_content(url=wz_item['content_url'])
+
                 mysql.table('wenzhang_info').add({'title':wz_item['title'],
                                                 'source_url':sourceurl,
                                                 'content_url':wz_item['content_url'],
@@ -112,7 +109,10 @@ for item in mp_list:
                                                 'type':wz_item['type'],
                                                 'like_count':0,
                                                 'read_count':0,
-                                                'comment_count':0})
+                                                'comment_count':0,
+                                                'content':wz_content})
+
+                
 
         #更新最新推送ID
         if(last_qunfa_id < cur_qunfa_id):
@@ -121,7 +121,7 @@ for item in mp_list:
     except KeyboardInterrupt:
         break
     # except: #如果不想因为错误使程序退出，可以开启这两句代码
-    #     print u"出错，继续"
+    #     print(u"出错，继续")
     #     continue
             
 print('success')

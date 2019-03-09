@@ -5,9 +5,14 @@ import requests
 import random
 import time
 import re
+import sys
 from lxml import etree
 from PIL import Image
-import cookielib
+is_python3 = sys.version_info[0] > 2
+if is_python3 == False:
+    import cookielib
+else:
+    import http.cookiejar as cookielib
 import json
 
 try:
@@ -70,7 +75,7 @@ class WechatSogouBasic(WechatSogouBase):
             cookie_jar = cookielib.MozillaCookieJar()  
             cookies = open(cookies_file.get('file_name')).read()
             for cookie in json.loads(cookies):  
-                print cookie['name']
+                print(cookie['name'])
                 cookie_jar.set_cookie(cookielib.Cookie(version=0, name=cookie['name'], value=cookie['value'], port=None, port_specified=False, domain=cookie['domain'], domain_specified=False, domain_initial_dot=False, path=cookie['path'], path_specified=True, secure=cookie['secure'], expires=None, discard=True, comment=None, comment_url=None, rest={'HttpOnly': None}, rfc2109=False))  
             self._session.cookies.update(cookie_jar)
         
@@ -187,7 +192,8 @@ class WechatSogouBasic(WechatSogouBase):
             
             if hasattr(self, '_ocr'):
                 result = self._ocr.create(coder.content, 3060)
-                if not result.has_key('Result') :
+                print(result)
+                if 'Result' not in result :
                     print(u"若快识别失败，1秒后更换验证码再次尝试，尝试次数：%d" %(max_count))
                     time.sleep(1)
                     continue #验证码识别错误，再次执行
@@ -226,8 +232,8 @@ class WechatSogouBasic(WechatSogouBase):
 
                     pbsnuid = remsg['id'] #pb_cookie['SNUID'].value
                     pbsuv = ''#pb_cookie['SUV'].value
-                    print pbsnuid
-                    print pbsuv
+                    print(pbsnuid)
+                    print(pbsuv)
                     pburl = 'http://pb.sogou.com/pv.gif?uigs_productid=webapp&type=antispider&subtype=0_seccodeInputSuccess&domain=weixin&suv=%s&snuid=%s&t=%s' %(pbsuv,pbsnuid,str(time.time())[0:10])
                     
                     headers = {
@@ -266,7 +272,8 @@ class WechatSogouBasic(WechatSogouBase):
                 coder = self._session.get(codeurl)
                 logger.debug('vcode appear, using _ocr_for_get_gzh_article_by_url_text')
                 result = self._ocr.create(coder.content, 2040)
-                if not result.has_key('Result') :
+                print(result)
+                if 'Result' not in result :
                     print(u"若快识别失败，1秒后更换验证码再次尝试，尝试次数：%d" %(max_count))
                     time.sleep(1)
                     continue #验证码识别错误，再次执行
@@ -424,7 +431,7 @@ class WechatSogouBasic(WechatSogouBase):
         text = self._get(url, 'get', host='mp.weixin.qq.com')
         
         if u'为了保护你的网络安全，请输入验证码' in text:
-            print u'为了保护你的网络安全，请输入验证码'
+            print(u'为了保护你的网络安全，请输入验证码')
             try:
                 self._ocr_for_get_gzh_article_by_url_text(url)
 

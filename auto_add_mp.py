@@ -20,6 +20,8 @@ wechats = WechatSogouApi()
 
 #数据库实例
 mysql = mysql('add_mp_list')
+
+
 add_list = mysql.find(0)
 succ_count = 0
 

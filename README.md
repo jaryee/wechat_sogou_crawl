@@ -4,6 +4,8 @@
 
 ![py27](https://camo.githubusercontent.com/392a32588691a8418368a51ff33a12d41f11f0a9/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f707974686f6e2d322e372d6666363962342e737667)
 
+2019-03-07 增加对py3的支持，同时支持py2和py3
+
 2017-4-27搜狗微信取消了阅读、点攒及评论数据，所以无法通过搜狗获取这些数据了，有需要的可以联系我
 恰谈代抓业务，按量计费，扣扣：3221449010
 
@@ -36,11 +38,11 @@ http://blog.csdn.net/niuxiaojia09/article/details/55260770
 
 一、使用说明
 
-1、在mysql数据库中创建数据库，比如Jubang,数据格式为utf8mb4，然后导入jubang.sql文件，创建对应的数据库表
+1、在mysql数据库中创建数据库，数据库命名为Jubang,数据格式为utf8mb4，然后导入jubang.sql文件，创建对应的数据库表
 
 2、修改config.py文件中对应的设置，打码平台配置ruokuai这个一定要设置，否则出现验证码就不能正常工作了
 
-3、python对应的库的安装好，pymysql、request、lxml、PIL、werkzeug等
+3、执行：pip install -r requirements.txt  安装所需要的第三方包
 
 4、手动或自动在add_mp_list表中增加数据，然后运行auto_add_mp.py文件。
    比如可以这样用：给auto_add_mp.py设定一个定时任务，5分钟或10分钟，然后前台页面文件让使用者添加待抓取的

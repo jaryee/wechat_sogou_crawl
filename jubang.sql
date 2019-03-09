@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost
-Source Server Version : 50711
-Source Host           : 127.0.0.1:3306
-Source Database       : jubang
+Source Server         : 47.105.144.60
+Source Server Version : 50723
+Source Host           : 47.105.144.60:3306
+Source Database       : test
 
 Target Server Type    : MYSQL
-Target Server Version : 50711
+Target Server Version : 50723
 File Encoding         : 65001
 
-Date: 2017-02-16 17:16:30
+Date: 2019-03-07 20:26:19
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -24,7 +24,7 @@ CREATE TABLE `add_mp_list` (
   `name` varchar(50) DEFAULT '' COMMENT '要添加的公众号名称',
   `wx_hao` varchar(50) DEFAULT '' COMMENT '公众号的微信号',
   PRIMARY KEY (`_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of add_mp_list
@@ -50,14 +50,15 @@ CREATE TABLE `mp_info` (
   `last_qufa_time` datetime DEFAULT NULL COMMENT '最后一次群发的时间',
   `wz_url` varchar(300) DEFAULT '' COMMENT '最近文章URL',
   PRIMARY KEY (`_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=286 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=287 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of mp_info
 -- ----------------------------
 INSERT INTO `mp_info` VALUES ('266', '今日头条', 'headline_today', '北京字节跳动科技有限公司', '今日头条官方帐号', 'http://img01.sogoucdn.com/app/a/100520090/oIWsFt3Om27KzYpmW9LaBGPCUxaU', '', '2017-02-16 17:15:09', null, '0', '0', '0', null, 'http://mp.weixin.qq.com/profile?src=3&timestamp=1487236535&ver=1&signature=nDdjBk7tfBptUPQVaSHn*uoQ9hysPGOoChQf5umkzBbz3PSaIHThKmZzsU23I7vU1tNr6R6t8eQS6lC586yDLQ==');
 INSERT INTO `mp_info` VALUES ('276', '新榜', 'newrankcn', '上海看榜信息科技有限公司', '涨粉、变现、运营、观察,新榜给你不一样的新思路.新榜——内容创业服务平台,www.newrank.cn', 'http://img01.sogoucdn.com/app/a/100520090/oIWsFt3CUA6HniQM4e_i7zncqWkk', '', '2017-02-16 17:16:04', null, '0', '0', '0', null, 'http://mp.weixin.qq.com/profile?src=3&timestamp=1487236590&ver=1&signature=A38golU5GzltuG*u78AoIZkLnJS--EsX4PCDJyq3coRVjU3ZoBZ9UUWZNyOHDzCFw1Q34XVteeqgSGthakK1Ig==');
-INSERT INTO `mp_info` VALUES ('278', '娱乐新榜', 'yulexinbang', '北京快络科技有限公司', '娱乐新人第一自媒体平台,为导演找新人,为新人找发展.深度开挖新人潜力与特色,助力新人演艺事业快速起步.向导演制片等影视从业人员提供第一手新晋艺人资料,实现艺人资源与影视需求的完美对接.', 'http://img01.sogoucdn.com/app/a/100520090/oIWsFt8lrEWgjvNDVlT1S7wL5Nyw', '', '2017-02-16 17:16:04', null, '0', '0', '0', null, 'http://mp.weixin.qq.com/profile?src=3&timestamp=1487236590&ver=1&signature=fd*NZOcIHHxSZQ6Y44LFP1WmzZvhuKe0sJd2PpGunRcL29nV7xxEmTpcgsDcugGeaigun7XgKvbtOjBxEEOaIQ==');
+INSERT INTO `mp_info` VALUES ('278', '娱乐新榜', 'yulexinbang', '北京快络科技有限公司', '娱乐新人第一自媒体平台,为导演找新人,为新人找发展.深度开挖新人潜力与特色,助力新人演艺事业快速起步.向导演制片等影视从业人员提供第一手新晋艺人资料,实现艺人资源与影视需求的完美对接.', '//img01.sogoucdn.com/app/a/100520090/oIWsFt8lrEWgjvNDVlT1S7wL5Nyw', '', '2017-02-16 17:16:04', null, '0', '0', '0', null, 'http://mp.weixin.qq.com/profile?src=3&timestamp=1551960049&ver=1&signature=fd*NZOcIHHxSZQ6Y44LFP1WmzZvhuKe0sJd2PpGunRcPNotPrCVBSO7sVIDjNkOkF8MkVzv35-iroU38v0GQww==');
+INSERT INTO `mp_info` VALUES ('286', '人民日报', 'rmrbwx', '人民日报社', '参与、沟通、记录时代.', '//img01.sogoucdn.com/app/a/100520090/oIWsFt8_jYUmdw1PQgNVhH9vOEvI', '', '2019-03-07 19:54:26', '2019-03-07 19:58:58', '0', '0', '1000008043', '2019-03-07 18:57:13', 'http://mp.weixin.qq.com/profile?src=3&timestamp=1551959664&ver=1&signature=bSSQMK1LY77M4O22qTi37cbhjhwNV7C9V4aor9HLhAt-Wdr*jWO2gFh3jN4KhPmYamKHzx9fg9SuHxCB1nGehg==');
 
 -- ----------------------------
 -- Table structure for `wenzhang_info`
@@ -65,23 +66,24 @@ INSERT INTO `mp_info` VALUES ('278', '娱乐新榜', 'yulexinbang', '北京快�
 DROP TABLE IF EXISTS `wenzhang_info`;
 CREATE TABLE `wenzhang_info` (
   `_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `title` varchar(100) DEFAULT '' COMMENT '文章标题',
-  `source_url` varchar(300) DEFAULT '' COMMENT '原文地址',
-  `cover_url` varchar(200) DEFAULT '' COMMENT '封面图URL',
-  `description` varchar(200) DEFAULT '' COMMENT '文章摘要',
+  `title` text COMMENT '文章标题',
+  `source_url` text COMMENT '原文地址',
+  `cover_url` text COMMENT '封面图URL',
+  `description` text COMMENT '文章摘要',
   `date_time` datetime DEFAULT NULL COMMENT '文章推送时间',
   `mp_id` int(11) DEFAULT '0' COMMENT '对应的公众号ID',
   `read_count` int(11) DEFAULT '0' COMMENT '阅读数',
   `like_count` int(11) DEFAULT '0' COMMENT '点攒数',
   `comment_count` int(11) DEFAULT '0' COMMENT '评论数',
-  `content_url` varchar(300) DEFAULT '' COMMENT '文章永久地址',
+  `content_url` text COMMENT '文章临时地址',
   `author` varchar(50) DEFAULT '' COMMENT '作者',
   `msg_index` int(11) DEFAULT '0' COMMENT '一次群发中的图文顺序 1是头条 ',
   `copyright_stat` int(1) DEFAULT '0' COMMENT '11表示原创 其它表示非原创',
   `qunfa_id` int(30) DEFAULT '0' COMMENT '群发消息ID',
   `type` int(11) DEFAULT '0' COMMENT '消息类型',
+  `content` longtext COMMENT '文章正文',
   PRIMARY KEY (`_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6559 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=6579 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of wenzhang_info

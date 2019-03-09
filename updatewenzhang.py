@@ -94,7 +94,7 @@ for item in mp_list:
                 read_count = wz_data['read_count']
                 like_count = wz_data['like_count']
                 comment_count = wz_data['comment_count']
-                print "%d new_read:%d  new_like:%d read:%d  like:%d" %(wz_data['_id'], article_info['comment']['read_num'],article_info['comment']['like_num'],read_count,like_count)
+                print("%d new_read:%d  new_like:%d read:%d  like:%d" %(wz_data['_id'], article_info['comment']['read_num'],article_info['comment']['like_num'],read_count,like_count))
                 #把文章写入数据库
                 mysql.table('wenzhang_statistics').add({'wz_id':wz_data['_id'],
                                                 'create_time':time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time())),
@@ -110,7 +110,7 @@ for item in mp_list:
     except KeyboardInterrupt:
         break
     except: #如果不想因为错误使程序退出，可以开启这两句代码
-        print u"出错，继续"
+        print(u"出错，继续")
         continue
                 
 print('success')

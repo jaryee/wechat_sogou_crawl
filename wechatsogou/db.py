@@ -27,7 +27,7 @@ class mysql():
     m.where({}).delete() # 删除
     """
 
-    def __init__(self, table='', prefix=''):
+    def __init__(self,table='', prefix='', host='',user='',passwd='',db='',charset=''):
         """初始化
 
         table是初始化选择的表，后面可以使用table()函数更改
@@ -38,6 +38,17 @@ class mysql():
         self.passwd = config.passwd
         self.db = config.db
         self.charset = config.charset
+
+        if host:
+            self.host = host
+        if user:
+            self.user = user
+        if passwd:
+            self.passwd = passwd
+        if db:
+            self.db = db
+        if charset:
+            self.charset = charset
         if prefix:
             self.prefix = prefix + '_'
         elif config.prefix:
@@ -67,6 +78,8 @@ class mysql():
         else:
             raise MysqlDbException('更新语句参数错误 - Model.__update')
         self.conn.commit()
+
+        return self.cur.lastrowid
 
     def __delete(self, sql):
         """删除语句
@@ -162,7 +175,7 @@ class mysql():
         if hasattr(self, 'tablename'):
             sql = "insert into `" + self.tablename + "` (" + ks[:-1] + ") values (" + vs[:-1] + ")"
             try:
-                self.__update(sql)
+                return self.__update(sql)
             except pymysql.err.IntegrityError:
                 pass
         else:

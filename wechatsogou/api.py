@@ -9,9 +9,6 @@ from .basic import WechatSogouBasic
 from .exceptions import *
 import json
 import logging
-import urlparse
-import urllib2
-import httplib2
 import codecs,os
 from bs4 import BeautifulSoup
 logger = logging.getLogger()
@@ -338,16 +335,16 @@ class WechatSogouApi(WechatSogouBasic):
         else:
             raise WechatSogouException('deal_content need param url or text')
 
+        #纯文字
         bsObj = BeautifulSoup(text)
         content_text = bsObj.find("div", {"class":"rich_media_content", "id":"js_content"})
-        content_html = content_text.get_text()
-        # content_html = re.findall(u'<div class="rich_media_content " id="js_content">(.*?)</div>', text, re.S)
-        # if content_html :
-        #     content_html = content_html[0]
+        if not content_text: #分享的文章
+            content_text = bsObj.find("div", {"class":"share_media", "id":"js_share_content"})
 
-        # content_rich = re.sub(u'<(?!img|br).*?>', '', content_html)
-        # pipei = re.compile(u'<img(.*?)src="(.*?)"(.*?)/>')
-        # content_text = pipei.sub(lambda m: '<img src="' + m.group(2) + '" />', content_rich)
+        content_html = ""
+        if content_text:
+            content_html = content_text.get_text()
+
         return content_html
 
     def deal_article_related(self, url, title):
@@ -675,13 +672,6 @@ class WechatSogouApi(WechatSogouBasic):
     #下载文章到本地
     def down_html(self, url,dir_name):
         try:
-            #获取biz
-            params =  urlparse.urlsplit(url).query
-            params = urlparse.parse_qs(params,True)
-            if not params.has_key('__biz') :
-                #可能是搜狗链接，先转成微信连接
-                url = self.deal_get_real_url(url)
-
             url = url.replace('\\x26','&')
             url = url.replace('x26','&')
 
@@ -740,7 +730,7 @@ class WechatSogouApi(WechatSogouBasic):
 
             # 下载封面
             url = msg_cdn_url
-            print u'正在下载文章：' + url
+            print(u'正在下载文章：' + url)
             resp, contentface = h.request(url)
             
             file_name = dir + 'cover.jpg'
@@ -786,14 +776,14 @@ class WechatSogouApi(WechatSogouBasic):
             with open("%sindex.html" % (dir), "wb") as code :
                 code.write(html)
 
-            print u'文章下载完成'
+            print(u'文章下载完成')
             ret_path = os.path.abspath('.')
             ret_path = ret_path.replace('\\', "/")
             ret_path = "%s/%sindex.html" %(ret_path.decode('GB18030').encode('utf-8'),dir)
             #print(ret_path)
         #except:
         except WechatSogouHistoryMsgException:
-            print u'文章内容有异常编码，无法下载'
+            print(u'文章内容有异常编码，无法下载')
             return ""
         return ret_path
 
