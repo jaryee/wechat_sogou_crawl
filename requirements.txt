@@ -1,0 +1,6 @@
+bs4
+requests
+PyMySQL
+lxml
+pillow
+werkzeug
