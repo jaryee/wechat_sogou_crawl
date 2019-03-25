@@ -144,31 +144,31 @@ class WechatSogouBasic(WechatSogouBase):
             "Upgrade-Insecure-Requests":'1',
             "User-Agent": self._agent[random.randint(0, len(self._agent) - 1)],
             "Accept":'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            "Referer": referer if referer else 'http://weixin.sogou.com/',
+            "Referer": referer if referer else 'https://weixin.sogou.com/',
             "Accept-Encoding":'gzip, deflate, sdch',
             "Accept-Language":'zh-CN,zh;q=0.8'
             
         }
         if rtype == 'get':
             #self._session.cookies.set
-            r = self._session.get(url, headers=headers, **kwargs)
+            r = self._session.get(url, headers=headers,verify=False, **kwargs)
         else:
             data = kwargs.get('data', None)
             json = kwargs.get('json', None)
-            r = self._session.post(url, data=data, json=json, headers=headers, **kwargs)
+            r = self._session.post(url, data=data, json=json, headers=headers,verify=False, **kwargs)
         
         #logger.error(r.text)
         if u'链接已过期' in r.text:
             return '链接已过期'
         if r.status_code == requests.codes.ok:
             r.encoding = self._get_encoding_from_reponse(r)
-            if u'用户您好，您的访问过于频繁，为确认本次访问为正常用户行为，需要您协助验证' in r.text:
+            if u'用户您好，您的访问过于频繁，为确认本次访问为正常用户行为，需要您协助验证' in r.text or u'用户您好，我们的系统检测到您网络中存在异常访问请求' in r.text:
                 self._vcode_url = url
-                logger.error('出现验证码。。。')
+                logger.error(u'出现验证码。。。')
                 print(u'用户您好，您的访问过于频繁，为确认本次访问为正常用户行为，需要您协助验证')
                 raise WechatSogouVcodeException('weixin.sogou.com verification code')
         else:
-            logger.error('requests status_code error' + r.status_code)
+            logger.error('requests status_code error %d' % (r.status_code))
             raise WechatSogouRequestsException('requests status_code error', r.status_code)
         return r.text
 
@@ -186,8 +186,8 @@ class WechatSogouBasic(WechatSogouBase):
             print(u"出现验证码，准备自动识别")
             max_count += 1
             logger.debug('vcode appear, using _jiefeng')
-            codeurl = 'http://weixin.sogou.com/antispider/util/seccode.php?tc=' + str(time.time())[0:10]
-            coder = self._session.get(codeurl)
+            codeurl = 'https://weixin.sogou.com/antispider/util/seccode.php?tc=' + str(time.time())[0:10]
+            coder = self._session.get(codeurl,verify=False)
             codeID = "0"
             
             if hasattr(self, '_ocr'):
@@ -203,7 +203,7 @@ class WechatSogouBasic(WechatSogouBase):
                     img_code = result['Result']
                     codeID = result['Id']
 
-                    post_url = 'http://weixin.sogou.com/antispider/thank.php'
+                    post_url = 'https://weixin.sogou.com/antispider/thank.php'
                     post_data = {
                         'c': img_code,
                         'r': quote(self._vcode_url),
@@ -213,11 +213,11 @@ class WechatSogouBasic(WechatSogouBase):
                     headers = {
                         "User-Agent": user_agent,
                         'Host': 'weixin.sogou.com',
-                        'Referer': 'http://weixin.sogou.com/antispider/?from=%2f' + quote(
+                        'Referer': 'https://weixin.sogou.com/antispider/?from=%2f' + quote(
                             self._vcode_url.replace('http://', ''))
                     }
                     #time.sleep(3)
-                    rr = self._session.post(post_url, post_data, headers=headers)
+                    rr = self._session.post(post_url, post_data, headers=headers,verify=False)
                     remsg = eval(rr.content)
                     if remsg['code'] != 0:
                         print(u"搜狗返回验证码错误，1秒后更换验证码再次启动尝试，尝试次数：%d" %(max_count))
@@ -239,10 +239,10 @@ class WechatSogouBasic(WechatSogouBase):
                     headers = {
                         "User-Agent": user_agent,
                         'Host': 'pb.sogou.com',
-                        'Referer': 'http://weixin.sogou.com/antispider/?from=%2f' + quote(
+                        'Referer': 'https://weixin.sogou.com/antispider/?from=%2f' + quote(
                             self._vcode_url.replace('http://', ''))
                     }
-                    self._session.get(pburl, headers=headers)
+                    self._session.get(pburl, headers=headers,verify=False)
                     
                     time.sleep(0.5)
                     
@@ -269,7 +269,7 @@ class WechatSogouBasic(WechatSogouBase):
                 timestr = str(time.time()).replace('.', '')
                 timever = timestr[0:13] + '.' + timestr[13:17]
                 codeurl = 'http://mp.weixin.qq.com/mp/verifycode?cert=' + timever
-                coder = self._session.get(codeurl)
+                coder = self._session.get(codeurl,verify=False)
                 logger.debug('vcode appear, using _ocr_for_get_gzh_article_by_url_text')
                 result = self._ocr.create(coder.content, 2040)
                 print(result)
@@ -293,7 +293,7 @@ class WechatSogouBasic(WechatSogouBase):
                         'Host': 'mp.weixin.qq.com',
                         'Referer': url
                     }
-                    rr = self._session.post(post_url, post_data, headers=headers)
+                    rr = self._session.post(post_url, post_data, headers=headers,verify=False)
                     remsg = eval(rr.text)
                     if remsg['ret'] != 0:
                         print(u"搜狗返回验证码错误，1秒后更换验证码再次启动尝试，尝试次数：%d" %(max_count))
@@ -377,7 +377,7 @@ class WechatSogouBasic(WechatSogouBase):
         Returns:
             text: 返回的文本
         """
-        request_url = 'http://weixin.sogou.com/weixin?query=' + quote(
+        request_url = 'https://weixin.sogou.com/weixin?query=' + quote(
             name) + '&_sug_type_=&_sug_=n&type=1&page=' + str(page) + '&ie=utf8'
         try:
             text = self._get(request_url)
@@ -386,7 +386,7 @@ class WechatSogouBasic(WechatSogouBase):
             try:
                 self._jiefeng()
                 text = self._get(request_url, 'get', 
-                                referer='http://weixin.sogou.com/antispider/?from=%2f' + quote(
+                                referer='https://weixin.sogou.com/antispider/?from=%2f' + quote(
                                     self._vcode_url.replace('http://', '')))
             except WechatSogouVcodeException:
                 text = ""
@@ -402,7 +402,7 @@ class WechatSogouBasic(WechatSogouBase):
         Returns:
             text: 返回的文本
         """
-        request_url = 'http://weixin.sogou.com/weixin?query=' + quote(
+        request_url = 'https://weixin.sogou.com/weixin?query=' + quote(
             name) + '&_sug_type_=&_sug_=n&type=2&page=' + str(page) + '&ie=utf8'
 
         try:
@@ -412,7 +412,7 @@ class WechatSogouBasic(WechatSogouBase):
             try:
                 self._jiefeng()
                 text = self._get(request_url, 'get', 
-                                referer='http://weixin.sogou.com/antispider/?from=%2f' + quote(
+                                referer='https://weixin.sogou.com/antispider/?from=%2f' + quote(
                                   self._vcode_url.replace('http://', '')))
             except WechatSogouVcodeException:
                 text = ""
@@ -427,6 +427,13 @@ class WechatSogouBasic(WechatSogouBase):
         Returns:
             text: 返回的文本
         """
+
+        if "http://mp.weixin.qq.com/profile" in url:
+            return "链接已过期"
+
+        #先获取正式的文章列表url
+        r = requests.get(url)
+        url = "http://" + re.findall("http://(.+?)';", r.text, re.S)[0]
 
         text = self._get(url, 'get', host='mp.weixin.qq.com')
         

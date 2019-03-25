@@ -55,7 +55,10 @@ class WechatSogouApi(WechatSogouBasic):
         url = list()
         info_urls = page.xpath(u"//div[@class='img-box']//a");
         for info_url in info_urls:
-            url.append(info_url.attrib['href'])
+            urlTemp = info_url.attrib['href']
+            if "https" not in urlTemp:
+                urlTemp = "https://weixin.sogou.com" + urlTemp
+            url.append(urlTemp)
         
         #微信号
         wechatid = page.xpath(u"//label[@name='em_weixinhao']/text()");
@@ -128,7 +131,7 @@ class WechatSogouApi(WechatSogouBasic):
         """
         try:
             info = self.search_gzh_info(wechatid, 1)
-            return info[0] if info else False
+            return info[0] if info else ""
         except:
             return ""
 
@@ -472,7 +475,7 @@ class WechatSogouApi(WechatSogouBasic):
             page_str = 'pc_0'
         else:
             page_str = str(page)
-        url = 'http://weixin.sogou.com/pcindex/pc/pc_' + str(kind) + '/' + page_str + '.html'
+        url = 'https://weixin.sogou.com/pcindex/pc/pc_' + str(kind) + '/' + page_str + '.html'
         try:
             text = self._get(url)
             page = etree.HTML(text)
