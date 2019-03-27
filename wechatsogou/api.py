@@ -39,7 +39,7 @@ class WechatSogouApi(WechatSogouBasic):
             url: 文章地址
             last_url: 最后一篇文章地址 暂无
         """
-        text = self._search_gzh_text(name, page)
+        text,request_url = self._search_gzh_text(name, page)
         
         try:
             page = etree.HTML(text)
@@ -56,9 +56,22 @@ class WechatSogouApi(WechatSogouBasic):
         info_urls = page.xpath(u"//div[@class='img-box']//a");
         for info_url in info_urls:
             urlTemp = info_url.attrib['href']
+            realurl = ""
             if "https" not in urlTemp:
-                urlTemp = "https://weixin.sogou.com" + urlTemp
-            url.append(urlTemp)
+                urlTemp = "https://weixin.sogou.com" + urlTemp + "&k=90&h=y"
+
+            try:
+                #转成正式的文章列表url
+                print(u"先获取正式的文章列表url")
+                text = self._get(urlTemp,referer=request_url)
+                arr = text.split("url +=");
+                for iterating_var in arr:
+                    realurl+=iterating_var.split("'")[1];
+            except WechatSogouVcodeException:
+                realurl = ""
+       
+
+            url.append(realurl)
         
         #微信号
         wechatid = page.xpath(u"//label[@name='em_weixinhao']/text()");

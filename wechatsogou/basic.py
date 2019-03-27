@@ -145,8 +145,8 @@ class WechatSogouBasic(WechatSogouBase):
             "User-Agent": self._agent[random.randint(0, len(self._agent) - 1)],
             "Accept":'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             "Referer": referer if referer else 'https://weixin.sogou.com/',
-            "Accept-Encoding":'gzip, deflate, sdch',
-            "Accept-Language":'zh-CN,zh;q=0.8'
+            "Accept-Encoding":'gzip, deflate, br',
+            "Accept-Language":'zh,zh-TW;q=0.9,en-US;q=0.8,en;q=0.7,zh-CN;q=0.6'
             
         }
         if rtype == 'get':
@@ -377,8 +377,9 @@ class WechatSogouBasic(WechatSogouBase):
         Returns:
             text: 返回的文本
         """
-        request_url = 'https://weixin.sogou.com/weixin?query=' + quote(
-            name) + '&_sug_type_=&_sug_=n&type=1&page=' + str(page) + '&ie=utf8'
+        request_url = 'https://weixin.sogou.com/weixin?type=1&s_from=input&query='  + quote(
+            name) + '&ie=utf8&_sug_=n&_sug_type_=&page=' + str(page)
+
         try:
             text = self._get(request_url)
         except WechatSogouVcodeException:
@@ -391,7 +392,13 @@ class WechatSogouBasic(WechatSogouBase):
             except WechatSogouVcodeException:
                 text = ""
 
-        return text
+        try:
+            new_url = "https://weixin.sogou.com" + re.findall('var account_anti_url = "(.+?)";', text, re.S)[0]
+            self._get(new_url, 'get', referer=request_url)
+        except:
+            print("error")
+
+        return text,request_url
 
     def _search_article_text(self, name, page=1):
         """通过搜狗搜索微信文章关键字返回的文本
@@ -427,13 +434,8 @@ class WechatSogouBasic(WechatSogouBase):
         Returns:
             text: 返回的文本
         """
-
-        if "http://mp.weixin.qq.com/profile" in url:
+        if "https://weixin.sogou.com" in url:
             return "链接已过期"
-
-        #先获取正式的文章列表url
-        r = requests.get(url)
-        url = "http://" + re.findall("http://(.+?)';", r.text, re.S)[0]
 
         text = self._get(url, 'get', host='mp.weixin.qq.com')
         

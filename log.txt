@@ -232,3 +232,70 @@
 2019-03-25 17:54:45,553 - [basic.py:167] - ERROR - 出现验证码。。。
 2019-03-25 18:37:38,490 - [basic.py:167] - ERROR - 出现验证码。。。
 2019-03-25 18:37:41,722 - [basic.py:251] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 20:38:28,200 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:38:33,880 - [basic.py:251] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 20:38:33,926 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:42:31,461 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:42:57,782 - [basic.py:251] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 20:48:23,300 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:48:48,658 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:49:55,142 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:50:08,824 - [basic.py:251] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 20:50:08,865 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:50:08,927 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:50:13,037 - [basic.py:251] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 20:50:13,068 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:50:48,862 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:50:55,066 - [basic.py:251] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 20:50:55,103 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:51:00,871 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:51:22,041 - [basic.py:251] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 20:51:33,915 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:53:43,241 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:53:47,295 - [basic.py:251] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 20:53:47,328 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:53:47,395 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 20:53:55,312 - [basic.py:251] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 20:53:55,349 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 21:04:12,624 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 21:05:02,985 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 21:05:07,615 - [basic.py:251] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 21:05:07,650 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 21:15:47,302 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 21:18:26,610 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 21:20:16,006 - [basic.py:251] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 21:20:27,791 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 21:37:51,990 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 21:38:07,842 - [basic.py:251] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 21:42:02,924 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 21:54:36,517 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 22:27:18,812 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 22:27:28,472 - [basic.py:251] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 22:28:24,120 - [basic.py:167] - ERROR - 出现验证码。。。
+2019-03-26 22:39:32,737 - [basic.py:168] - ERROR - 出现验证码。。。
+2019-03-26 22:53:41,473 - [basic.py:171] - ERROR - 出现验证码。。。
+2019-03-26 22:53:52,893 - [basic.py:255] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 22:54:22,273 - [basic.py:171] - ERROR - 出现验证码。。。
+2019-03-26 22:54:28,818 - [basic.py:255] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 22:57:38,855 - [basic.py:171] - ERROR - 出现验证码。。。
+2019-03-26 22:58:08,945 - [basic.py:255] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 23:00:57,864 - [basic.py:174] - ERROR - 出现验证码。。。
+2019-03-26 23:01:32,793 - [basic.py:258] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
+2019-03-26 23:06:23,997 - [basic.py:174] - ERROR - 出现验证码。。。
+2019-03-26 23:13:53,770 - [basic.py:174] - ERROR - 出现验证码。。。
+2019-03-27 14:02:00,420 - [basic.py:178] - ERROR - requests status_code error 502
+2019-03-27 14:02:27,918 - [basic.py:178] - ERROR - requests status_code error 502
+2019-03-27 14:02:54,219 - [basic.py:178] - ERROR - requests status_code error 502
+2019-03-27 14:02:55,268 - [basic.py:178] - ERROR - requests status_code error 502
+2019-03-27 14:02:57,451 - [basic.py:178] - ERROR - requests status_code error 502
+2019-03-27 14:02:58,529 - [basic.py:178] - ERROR - requests status_code error 502
+2019-03-27 14:02:59,596 - [basic.py:178] - ERROR - requests status_code error 502
+2019-03-27 14:03:00,663 - [basic.py:178] - ERROR - requests status_code error 502
+2019-03-27 14:03:02,734 - [basic.py:178] - ERROR - requests status_code error 502
+2019-03-27 14:03:03,765 - [basic.py:178] - ERROR - requests status_code error 502
+2019-03-27 14:03:04,918 - [basic.py:178] - ERROR - requests status_code error 502
+2019-03-27 14:03:05,993 - [basic.py:178] - ERROR - requests status_code error 502
+2019-03-27 14:03:08,061 - [basic.py:178] - ERROR - requests status_code error 502
+2019-03-27 14:03:09,097 - [basic.py:178] - ERROR - requests status_code error 502
+2019-03-27 21:32:59,122 - [basic.py:174] - ERROR - 出现验证码。。。
+2019-03-27 21:33:04,321 - [basic.py:258] - ERROR - verify code ocr: 解封成功，正在为您跳转来源地址...
