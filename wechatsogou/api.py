@@ -22,11 +22,14 @@ class WechatSogouApi(WechatSogouBasic):
     def __init__(self, **kwargs):
         super(WechatSogouApi, self).__init__(**kwargs)
 
-    def get_k_h(self,url):
+    def get_k_h(self,url,text):
         """计算k和h"""
-        k = random.randrange(1,100)
-        h = url[57+k]
-
+        try:
+            k = random.randrange(1,100)
+            normal = re.findall('a\+4\+parseInt\("(.*?)"', text, re.S)[0]
+            h = url[34+int(normal)+k]
+        except Exception as e:
+            traceback.print_exc()
         return str(k),h
 
     def search_gzh_info(self, name, page=1):
@@ -47,10 +50,10 @@ class WechatSogouApi(WechatSogouBasic):
             url: 文章地址
             last_url: 最后一篇文章地址 暂无
         """
-        text,request_url = self._search_gzh_text(name, page)
+        htmlText,request_url = self._search_gzh_text(name, page)
         
         try:
-            page = etree.HTML(text)
+            page = etree.HTML(htmlText)
         except:
             return ""
 
@@ -71,7 +74,7 @@ class WechatSogouApi(WechatSogouBasic):
             try:
 
                 #计算加密k
-                k,h = self.get_k_h(urlTemp)
+                k,h = self.get_k_h(urlTemp,htmlText)
                 urlTemp = "%s&k=%s&h=%s" %(urlTemp,k,h)
                 #转成正式的文章列表url
                 print(u"先获取正式的文章列表url")
