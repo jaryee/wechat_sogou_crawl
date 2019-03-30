@@ -10,6 +10,7 @@ from .exceptions import *
 import json
 import logging
 import codecs,os
+import random
 from bs4 import BeautifulSoup
 logger = logging.getLogger()
 
@@ -20,6 +21,13 @@ class WechatSogouApi(WechatSogouBasic):
 
     def __init__(self, **kwargs):
         super(WechatSogouApi, self).__init__(**kwargs)
+
+    def get_k_h(self,url):
+        """计算k和h"""
+        k = random.randrange(1,100)
+        h = url[57+k]
+
+        return str(k),h
 
     def search_gzh_info(self, name, page=1):
         """搜索公众号
@@ -58,9 +66,13 @@ class WechatSogouApi(WechatSogouBasic):
             urlTemp = info_url.attrib['href']
             realurl = ""
             if "https" not in urlTemp:
-                urlTemp = "https://weixin.sogou.com" + urlTemp + "&k=90&h=y"
-
+                urlTemp = "https://weixin.sogou.com" + urlTemp
+                #urlTemp = "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6EzDJysI4ql5MPrOUp16838dGRMI7NnPqd7f2zaZT8G5XX6CVLv7ghwwvDqyjOWdzJRR9kv142zmzO5mLYzdWtr0gCwKco-MoXapf6ecdCpf0FojXSUCaI0AbdUwNO9bh1Gmjh__CSkSsWFwwodqOp8Ow2hU_0OwS0h4lvHQbidemvuZ2FfgnOGRTpLLTNgHY&type=1&query=mh_syxx&k=56&h=V"
             try:
+
+                #计算加密k
+                k,h = self.get_k_h(urlTemp)
+                urlTemp = "%s&k=%s&h=%s" %(urlTemp,k,h)
                 #转成正式的文章列表url
                 print(u"先获取正式的文章列表url")
                 text = self._get(urlTemp,referer=request_url)
