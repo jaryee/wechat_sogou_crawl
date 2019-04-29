@@ -187,7 +187,20 @@ class WechatSogouBasic(WechatSogouBase):
             max_count += 1
             logger.debug('vcode appear, using _jiefeng')
             codeurl = 'https://weixin.sogou.com/antispider/util/seccode.php?tc=' + str(time.time())[0:10]
-            coder = self._session.get(codeurl,verify=False)
+
+            user_agent = self._agent[random.randint(0, len(self._agent) - 1)]
+            headers = {
+            "Host": 'weixin.sogou.com',
+            "Upgrade-Insecure-Requests":'1',
+            "User-Agent": user_agent,
+            "Accept":'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            "Referer":'https://weixin.sogou.com/',
+            "Accept-Encoding":'gzip, deflate, sdch',
+            "Accept-Language":'zh-CN,zh;q=0.8'
+            }
+
+            coder = self._session.get(codeurl,headers=headers,timeout=10,verify=False)
+                
             codeID = "0"
             
             if hasattr(self, '_ocr'):
@@ -209,7 +222,7 @@ class WechatSogouBasic(WechatSogouBase):
                         'r': quote(self._vcode_url),
                         'v': 5
                     }
-                    user_agent = self._agent[random.randint(0, len(self._agent) - 1)]
+                    
                     headers = {
                         "User-Agent": user_agent,
                         'Host': 'weixin.sogou.com',
@@ -242,8 +255,13 @@ class WechatSogouBasic(WechatSogouBase):
                         'Referer': 'https://weixin.sogou.com/antispider/?from=%2f' + quote(
                             self._vcode_url.replace('http://', ''))
                     }
-                    self._session.get(pburl, headers=headers,verify=False)
                     
+                    try:
+                        self._session.get(pburl, headers=headers,timeout=10,verify=False)
+                    except:
+                        print('')
+
+						
                     time.sleep(0.5)
                     
                     print(u"搜狗返回验证码识别成功，继续执行")
